@@ -2,8 +2,8 @@ project:
   output-dir: _docs
 
 website:
-  title: "bs-dna-methyl"
-  site-url: "https://magistak.github.io/bs-dna-methyl"
+  title: "bs-cpg"
+  site-url: "https://magistak.github.io/bs-cpg"
   description: "A python package for downloading and processing RRBS DNA methylation data."
   repo-branch: main
-  repo-url: "https://github.com/magistak/bs-dna-methyl"
+  repo-url: "https://github.com/magistak/bs-cpg"
