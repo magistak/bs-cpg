@@ -1,0 +1,52 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "bs-dna-methyl",
+    "section": "",
+    "text": "This file will become your README and also the index of your documentation.",
+    "crumbs": [
+      "bs-dna-methyl"
+    ]
+  },
+  {
+    "objectID": "index.html#developer-guide",
+    "href": "index.html#developer-guide",
+    "title": "bs-dna-methyl",
+    "section": "Developer Guide",
+    "text": "Developer Guide\nIf you are new to using nbdev here are some useful pointers to get you started.\n\nInstall bs_dna_methyl in Development mode\n# make sure bs_dna_methyl package is installed in development mode\n$ pip install -e .\n\n# make changes under nbs/ directory\n# ...\n\n# compile to have changes apply to bs_dna_methyl\n$ nbdev_prepare",
+    "crumbs": [
+      "bs-dna-methyl"
+    ]
+  },
+  {
+    "objectID": "index.html#usage",
+    "href": "index.html#usage",
+    "title": "bs-dna-methyl",
+    "section": "Usage",
+    "text": "Usage\n\nInstallation\nInstall latest from the GitHub repository:\n$ pip install git+https://github.com/magistak/bs-dna-methyl.git\nor from conda\n$ conda install -c magistak bs_dna_methyl\nor from pypi\n$ pip install bs_dna_methyl\n\n\nDocumentation\nDocumentation can be found hosted on this GitHub repository’s pages. Additionally you can find package manager specific guidelines on conda and pypi respectively.",
+    "crumbs": [
+      "bs-dna-methyl"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-use",
+    "href": "index.html#how-to-use",
+    "title": "bs-dna-methyl",
+    "section": "How to use",
+    "text": "How to use\nFill me in please! Don’t forget code examples:\n\n1+1\n\n2",
+    "crumbs": [
+      "bs-dna-methyl"
+    ]
+  },
+  {
+    "objectID": "download_processed.html",
+    "href": "download_processed.html",
+    "title": "download_processed",
+    "section": "",
+    "text": "Import\n\nsource\n\nGeofetcher\n\n Geofetcher (name:str='', metadata_root:str='', metadata_folder:str='',\n             just_metadata:bool=False, refresh_metadata:bool=False,\n             config_template:str=None, pipeline_samples:str=None,\n             pipeline_project:str=None, skip:int=0, acc_anno:bool=False,\n             use_key_subset:bool=False, processed:bool=False,\n             data_source:str='samples', filter:str=None,\n             filter_size:str=None, geo_folder:str='.',\n             split_experiments:bool=False, bam_folder:str='',\n             fq_folder:str='', sra_folder:str='',\n             bam_conversion:bool=False, picard_path:str='',\n             input:str=None, const_limit_project:int=50,\n             const_limit_discard:int=1000, attr_limit_truncate:int=500,\n             max_soft_size:str='1GB', discard_soft:bool=False,\n             add_dotfile:bool=False, disable_progressbar:bool=False,\n             add_convert_modifier:bool=False, opts=None,\n             max_prefetch_size=None, **kwargs)\n\nPatched and extended version of Geofetcher class from geofetcher.\n\ngeo=Geofetcher(just_metadata=True)\nacc = 'GSE51239'\n\n[INFO] [15:31:53] Metadata folder: /home/magistak/bs-dna-methyl/nbs/project_name\n\n\n\nprojects = geo.get_projects(acc)\nprojects\n\n{'GSE51239_raw': Project\n 48 samples (showing first 20): hsperm-524-90, hsperm-530-90, hsperm-533-90, hsperm-534-90, h8c-1, h8c-2, hblast-1, hblast-2, hblast-3, hblastsingle-2, hblastsingle-5, hicm-1, hicm-2, hte-1, hte-2, hesp0-e1, hesp0-e4, hesp0-e5, hesp1-e1, hesp1-e4\n Sections: name, pep_version, sample_table, experiment_metadata, sample_modifiers, description}",
+    "crumbs": [
+      "download_processed"
+    ]
+  }
+]
