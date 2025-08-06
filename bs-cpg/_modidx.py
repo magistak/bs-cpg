@@ -12,4 +12,8 @@ d = { 'settings': { 'branch': 'main',
                                            'bs-cpg.download_processed._fetch_projects': ( 'download_processed.html#_fetch_projects',
                                                                                           'bs-cpg/download_processed.py')},
             'bs-cpg.liftover_ps': {'bs-cpg.liftover_ps.func': ('liftover_pos.html#func', 'bs-cpg/liftover_ps.py')},
-            'bs-cpg.setup': {'bs-cpg.setup.func': ('setup.html#func', 'bs-cpg/setup.py')}}}
+            'bs-cpg.setup': { 'bs-cpg.setup.download_file': ('setup.html#download_file', 'bs-cpg/setup.py'),
+                              'bs-cpg.setup.download_liftover_chain': ('setup.html#download_liftover_chain', 'bs-cpg/setup.py'),
+                              'bs-cpg.setup.download_ref_genome': ('setup.html#download_ref_genome', 'bs-cpg/setup.py'),
+                              'bs-cpg.setup.func': ('setup.html#func', 'bs-cpg/setup.py'),
+                              'bs-cpg.setup.get_base_data_path': ('setup.html#get_base_data_path', 'bs-cpg/setup.py')}}}
