@@ -2,4 +2,7 @@ website:
   sidebar:
     contents:
       - index.ipynb
-      - 00_download_processed.ipynb
+      - 00_download_processed_geo.ipynb
+      - 01_setup.ipynb
+      - 02_download_ref.ipynb
+      - 03_liftover_pos.ipynb
