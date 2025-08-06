@@ -1,7 +1,27 @@
 name: CI
-on:  [workflow_dispatch, pull_request, push]
+on: [workflow_dispatch, pull_request, push]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    steps: [uses: fastai/workflows/nbdev-ci@master]
+    steps:
+      # 1. Checks out your repository's code
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      # 2. Sets up the Python version specified in your settings.ini
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9' 
+
+      # 3. Installs your library and its development dependencies
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+
+      # 4. Runs the tests with the required environment variable
+      - name: Run nbdev tests
+        env:
+          BS_CPG_DATA: ./ci_data
+        run: nbdev_test
+
