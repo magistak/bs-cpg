@@ -17,7 +17,9 @@ jobs:
 
       # 3. Installs your library and its development dependencies
       - name: Install dependencies
-        run: pip install -e ".[dev]"
+        run: |
+          sudo apt-get install -y tabix
+          pip install -e ".[dev]"
 
       # 4. Runs the tests with the required environment variable
       - name: Run nbdev tests
