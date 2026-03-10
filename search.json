@@ -1,0 +1,82 @@
+[
+  {
+    "objectID": "download_ref.html",
+    "href": "download_ref.html",
+    "title": "download_ref",
+    "section": "",
+    "text": "Download reference genomes\n\n\ndownload_file\n\ndef download_file(\n    url:str, filename:str, sub_dir:Path=None, verbose:bool=True\n):\n\nA general utility to download a file, with optional status messages and a progress bar.\nArgs: url (str): The URL of the file to download. filename (str): The name for the saved file. sub_dir (Path, optional): A subdirectory under the main data path. Defaults to None. verbose (bool, optional): If True, prints status messages and shows a progress bar. Defaults to True.\nReturns: Path: The full path to the downloaded file, or None on error.\n\n\n\nis_bgzipped\n\ndef is_bgzipped(\n    filepath:Path\n)-&gt;bool:\n\nChecks if a file is block-gzipped (BGZF) by reading its header.\nArgs: filepath (Path): The path to the file to check.\nReturns: bool: True if the file is in BGZF format, False otherwise.\n\n\n\nconvert_to_bgzip\n\ndef convert_to_bgzip(\n    input_path:Path, output_path:Path\n)-&gt;bool:\n\nConverts a standard gzip file to a bgzip file using command-line tools. This function replicates the command: gunzip -c &lt;input&gt; | bgzip &gt; &lt;output&gt;.\nArgs: input_path (Path): The path to the input gzip file. output_path (Path): The path for the output bgzip file.\nReturns: bool: True if conversion was successful, False otherwise.\n\n\n\nget_ref_genome\n\ndef get_ref_genome(\n    name:str, kwargs:VAR_KEYWORD\n):\n\nDownloads a reference genome and ensures it is properly compressed with bgzip for use with pysam.\n\nget_ref_genome(\"hg38\")\n\n✅ Final file '/mnt/idms/home/magyary/.bs-cpg/hg38.fa.bgz' already exists.\n\n\n'/mnt/idms/home/magyary/.bs-cpg/hg38.fa.bgz'\n\n\n\n\"hg38\".capitalize()\n\n'Hg38'\n\n\n\n\n\nget_liftover_chain\n\ndef get_liftover_chain(\n    genome_from:str, genome_to:str, kwargs:VAR_KEYWORD\n):\n\nDownload liftover chain file between genome versions from UCSC goldenPath liftOver. To get path to downloaded file use with verbose = False.\nArgs: genome_from (str): The original reference genome name (e.g., ‘hg19’, ‘hg38’, ‘mm10’). genome_to (str): The new reference genome name (e.g., ‘hg19’, ‘hg38’, ‘mm10’). **kwargs: Additional keyword arguments to be passed to download_file() (e.g., verbose=False)\nReturns: Path: The path to the downloaded file, or None if an error occurred.",
+    "crumbs": [
+      "download_ref"
+    ]
+  },
+  {
+    "objectID": "liftover_pos.html",
+    "href": "liftover_pos.html",
+    "title": "liftover_pos",
+    "section": "",
+    "text": "Import example data\n\n# export\nimport pandas as pd\nimport re\nfrom bs_cpg.setup import *\nfrom bs_cpg.download_ref import *\nfrom pathlib import Path\nimport pysam\n\nDownloading sample data to /tmp/bs-cpg-data/.bs-cpg/sample_cpg_df.parquet...\n\n\n\ndf = read_sample_cpg([\"chromosome\", \"pos\"])\ndf\n\n\n\n\n\n\n\n\nchromosome\npos\n\n\n\n\n1594976\nchr11\n30607691\n\n\n41581\nchr1\n10269003\n\n\n2926242\nchrX\n55066102\n\n\n573570\nchr3\n169781668\n\n\n1930113\nchr14\n59950571\n\n\n...\n...\n...\n\n\n2556779\nchr19\n17438314\n\n\n452764\nchr2\n241331303\n\n\n1554781\nchr10\n135171502\n\n\n898587\nchr6\n31869119\n\n\n1764855\nchr12\n70024545\n\n\n\n\n1000 rows × 2 columns\n\n\n\n\ndf[\"chromosome\"].to_list()[:5]\n\n['chr11', 'chr1', 'chrX', 'chr3', 'chr14']\n\n\n\n# import pysam\n# fasta = pysam.FastaFile(\"data/hg38.fa\")\n# def fetch_seq(row):\n#     return fasta.fetch(row[\"new_chrom\"], row[\"Start\"], row[\"End\"])\n\n\nfasta = pysam.FastaFile(str(get_ref_genome(\"hg19\")))\n\n✅ Final file '/mnt/idms/home/magyary/.bs-cpg/hg19.fa.bgz' already exists.\n\n\n\nfasta.fetch(reference=\"chr1\", start=90000, end=90050)\n\n'tctcttgctgccctggagaccagctgccccacgaaggaaacagagccaac'\n\n\n\n\ncpg_reads\n\ndef cpg_reads(\n    chromosomes:Sequence, positions:Sequence, ref_genome:'Path | str | pysam.FastaFile', index_base:int=1\n):\n\nFetch the 2bp sequence starting at each given genomic position from a reference genome.\n\nchromosomes: list-like of chromosome names (e.g., ‘chr1’ or ‘1’).\npositions: list-like of genomic positions (ints). If index_base==1, positions are 1-based; if 0, 0-based.\nref_genome: genome name (e.g., ‘hg19’), a path to a bgzipped FASTA, or an open pysam.FastaFile.\nindex_base: 0 or 1 (default: 1).\n\nReturns a pandas Series of the fetched 2-mer (uppercased). None when unavailable. Also tolerates ‘chr’ vs no ‘chr’ chromosome naming by resolving once per unique chromosome.\n\n\n\ncpg_percent\n\ndef cpg_percent(\n    reads\n)-&gt;float:\n\nReturn the percent of entries equal to ‘CG’ (case-insensitive) in reads. Accepts any iterable/Series; ignores NA/None.\n\n\n\nguess_ref_and_index_base\n\ndef guess_ref_and_index_base(\n    chromosomes, positions, ref_genomes:Sequence[Union[str, 'Path']], index_bases:Sequence[int]=(0, 1)\n)-&gt;Dict[str, Any]:\n\nTry combinations of ref_genome and index_base, compute CG percent, and return the best guess (max percent) along with a summary of all tries.\nReturns a dict with keys: best_genome, best_index_base, best_percent, results (list of dicts).\n\nget_liftover_chain(\"hg19\", \"hg38\")\n\n✅ File '/mnt/idms/home/magyary/.bs-cpg/hg19ToHg38.over.chain.gz' already exists. Skipping.\n\n\nPath('/mnt/idms/home/magyary/.bs-cpg/hg19ToHg38.over.chain.gz')\n\n\n\n\n\nliftover_positions\n\ndef liftover_positions(\n    chromosomes:Sequence, positions:Sequence, genome_from:Optional[str]=None, genome_to:Optional[str]=None,\n    index_base_from:int=1, index_base_to:int=1, return_df:bool=False\n)-&gt;Union[Tuple[List[Optional[str]], List[Optional[int]]], '_pd.DataFrame']:\n\n\n# quick invariance checks (smoke tests)\n# These won't fail the notebook export but help catch accidental regressions when running interactively.\ntry:\n    # 0-&gt;0 should match 1-&gt;1 adjusted by conversion on both ends.\n    ch0, p0 = liftover_positions([\"chr1\"], [100000], \"hg19\", \"hg38\", index_base_from=0, index_base_to=0)\n    ch1, p1 = liftover_positions([\"chr1\"], [100001], \"hg19\", \"hg38\", index_base_from=1, index_base_to=1)\n    if ch0[0] is not None and ch1[0] is not None:\n        assert ch0[0] == ch1[0]\n        assert p0[0] == p1[0]\nexcept Exception:\n    # Non-fatal in notebook context\n    pass",
+    "crumbs": [
+      "liftover_pos"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "bs-cpg",
+    "section": "",
+    "text": "This file will become your README and also the index of your documentation.",
+    "crumbs": [
+      "bs-cpg"
+    ]
+  },
+  {
+    "objectID": "index.html#developer-guide",
+    "href": "index.html#developer-guide",
+    "title": "bs-cpg",
+    "section": "Developer Guide",
+    "text": "Developer Guide\nIf you are new to using nbdev here are some useful pointers to get you started.\n\nInstall bs_cpg in Development mode\n# make sure bs_cpg package is installed in development mode\n$ pip install -e .\n\n# make changes under nbs/ directory\n# ...\n\n# compile to have changes apply to bs_cpg\n$ nbdev_prepare",
+    "crumbs": [
+      "bs-cpg"
+    ]
+  },
+  {
+    "objectID": "index.html#usage",
+    "href": "index.html#usage",
+    "title": "bs-cpg",
+    "section": "Usage",
+    "text": "Usage\n\nInstallation\nInstall latest from the GitHub repository:\n$ pip install git+https://github.com/magistak/bs-cpg.git\nor from conda\n$ conda install -c magistak bs_cpg\nor from pypi\n$ pip install bs_cpg\n\n\nDocumentation\nDocumentation can be found hosted on this GitHub repository’s pages. Additionally you can find package manager specific guidelines on conda and pypi respectively.",
+    "crumbs": [
+      "bs-cpg"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-use",
+    "href": "index.html#how-to-use",
+    "title": "bs-cpg",
+    "section": "How to use",
+    "text": "How to use\nFill me in please! Don’t forget code examples:\n\n1+1\n\n2",
+    "crumbs": [
+      "bs-cpg"
+    ]
+  },
+  {
+    "objectID": "download_processed_geo.html",
+    "href": "download_processed_geo.html",
+    "title": "download_processed",
+    "section": "",
+    "text": "Import\n\n\nGeofetcher\n\ndef Geofetcher(\n    name:str='', metadata_root:str='', metadata_folder:str='', just_metadata:bool=False, refresh_metadata:bool=False,\n    config_template:str=None, pipeline_samples:str=None, pipeline_project:str=None, skip:int=0, acc_anno:bool=False,\n    use_key_subset:bool=False, processed:bool=False, data_source:str='samples', filter:str=None,\n    filter_size:str=None, geo_folder:str='.', split_experiments:bool=False, bam_folder:str='', fq_folder:str='',\n    sra_folder:str='', bam_conversion:bool=False, picard_path:str='', input:str=None, const_limit_project:int=50,\n    const_limit_discard:int=1000, attr_limit_truncate:int=500, max_soft_size:str='1GB', discard_soft:bool=False,\n    add_dotfile:bool=False, disable_progressbar:bool=False, add_convert_modifier:bool=False, opts:NoneType=None,\n    max_prefetch_size:NoneType=None, kwargs:VAR_KEYWORD\n):\n\nClass to download or get projects, metadata, data from GEO and SRA\n\ngeo=Geofetcher(just_metadata=True)\nacc = 'GSE51239'\n\n[INFO] [18:08:41] Metadata folder: /mnt/idms/home/magyary/bs-dna-methyl/nbs/project_name\n\n\nList files\n\nprojects = geo.get_projects(acc)\nprojects\n\n\n[INFO] [18:08:41] Metadata folder: /mnt/idms/home/magyary/bs-dna-methyl/nbs/project_name\n\n[INFO] [18:08:41] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:08:41] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:08:41] Skipped 0 accessions. Starting now.\n\n[INFO] [18:08:41] Processing accession 1 of 1: 'GSE51239'\n\n[INFO] [18:08:43] Processed 48 samples.\n\n[INFO] [18:08:43] Expanding metadata list...\n\n[INFO] [18:08:43] Found SRA Project accession: SRP030612\n\n[INFO] [18:08:43] Downloading SRP030612 sra metadata\n\n[INFO] [18:08:46] Parsing SRA file to download SRR records\n\n[INFO] [18:08:46] Dry run, no data will be downloaded\n\n[INFO] [18:08:46] Finished processing 1 accession(s)\n\n[INFO] [18:08:46] Cleaning soft files ...\n\n[INFO] [18:08:46] Creating complete project annotation sheets and config file...\n\n\n\n\n{'GSE51239_raw': Project\n 48 samples (showing first 20): hsperm-524-90, hsperm-530-90, hsperm-533-90, hsperm-534-90, h8c-1, h8c-2, hblast-1, hblast-2, hblast-3, hblastsingle-2, hblastsingle-5, hicm-1, hicm-2, hte-1, hte-2, hesp0-e1, hesp0-e4, hesp0-e5, hesp1-e1, hesp1-e4\n Sections: name, pep_version, sample_table, experiment_metadata, sample_modifiers, description}\n\n\nDownload files\n\nprojects_files=geof.get_projects(acc, just_metadata=False, ignore_cache=True)\n\n\n[INFO] [18:09:55] Metadata folder: /mnt/idms/home/magyary/bs-dna-methyl/nbs/project_name\n\n[INFO] [18:09:55] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:09:55] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:09:55] Skipped 0 accessions. Starting now.\n\n[INFO] [18:09:55] Processing accession 1 of 1: 'GSE51239'\n\n[INFO] [18:09:57] Processed 48 samples.\n\n[INFO] [18:09:57] Expanding metadata list...\n\n[INFO] [18:09:57] Found SRA Project accession: SRP030612\n\n[INFO] [18:09:57] Downloading SRP030612 sra metadata\n\n[INFO] [18:09:58] Parsing SRA file to download SRR records\n\n[INFO] [18:09:58] Getting SRR: SRR1003182  in (GSE51239)\n\n\n\n\n2025-07-28T16:09:58 prefetch.3.2.1: 1) Resolving 'SRR1003182'...\n2025-07-28T16:09:59 prefetch.3.2.1: Current preference is set to retrieve SRA Normalized Format files with full base quality scores\n\n\n[INFO] [18:10:00] Getting SRR: SRR1003183  in (GSE51239)\n\n\n2025-07-28T16:10:00 prefetch.3.2.1: 1) 'SRR1003182' is found locally \n2025-07-28T16:10:00 prefetch.3.2.1: 1) Resolving 'SRR1003183'...\n2025-07-28T16:10:01 prefetch.3.2.1: Current preference is set to retrieve SRA Normalized Format files with full base quality scores\n2025-07-28T16:10:02 prefetch.3.2.1: 1) Downloading 'SRR1003183'...\n2025-07-28T16:10:02 prefetch.3.2.1:  SRA Normalized Format file is being retrieved\n2025-07-28T16:10:02 prefetch.3.2.1:  Downloading via HTTPS...\n2025-07-28T16:10:02 prefetch.3.2.1:    Continue download of 'SRR1003183' from 154660408\n\n\nExplore files",
+    "crumbs": [
+      "download_processed"
+    ]
+  },
+  {
+    "objectID": "setup.html",
+    "href": "setup.html",
+    "title": "setup",
+    "section": "",
+    "text": "Set data directory\n\n\nget_base_data_path\n\ndef get_base_data_path(\n    \n):\n\nDetermines the base data path with a clear priority: 1. BS_CPG_DATA environment variable. 2. Path stored in ~/.bs-cpg-config.json. 3. Prompts the user for the path as a last resort.\n\n\n\nread_sample_cpg\n\ndef read_sample_cpg(\n    columns:list=None, force_download:bool=False\n):\n\nDownloads and reads a sample CpG Parquet file.\nThis function fetches a sample dataset from the project’s GitHub repository. It caches the file locally to avoid re-downloading on subsequent calls.\nArgs: columns (list, optional): A list of columns to read from the file. Defaults to None (all columns). force_download (bool, optional): If True, forces a re-download of the file even if it exists locally. Defaults to False.\nReturns: pd.DataFrame: A DataFrame containing the sample CpG data.",
+    "crumbs": [
+      "setup"
+    ]
+  }
+]
