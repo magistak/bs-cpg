@@ -11,4 +11,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      BS_CPG_DATA: /tmp/bs-cpg-data
     steps: [uses: fastai/workflows/quarto-ghp@master]
