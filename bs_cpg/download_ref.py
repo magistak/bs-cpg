@@ -98,7 +98,7 @@ def is_bgzipped(filepath: Path) -> bool:
         (header[3] & 0x04) != 0 and
         header[12:14] == b'BC'
     )
-is_bgzipped(filepath="/mnt/idms/home/magyary/.bs-cpg/hg19ToHg38.over.chain.gz")
+
 
 # %% ../nbs/02_download_ref.ipynb 8
 def convert_to_bgzip(input_path: Path, output_path: Path) -> bool:
