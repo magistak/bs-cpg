@@ -34,13 +34,13 @@ jobs:
           python -m pip install --upgrade pip
           # Pin setuptools to keep pkg_resources available for nbdev
           python -m pip install "setuptools<81"
-          # Install the exact versions we use locally
-          python -m pip install nbdev==2.3.34 execnb==0.1.11
+          # Pin compatible nbdev dependency stack
+          python -m pip install "fastcore<1.8" nbdev==2.3.34 execnb==0.1.11
           # Install the local package and dev dependencies
           python -m pip install -e ".[dev]"
-          python -c "import pkg_resources; print(pkg_resources.__file__)"
+          python -c "import pkg_resources, fastcore, nbdev; from execnb.nbio import read_nb; print('setuptools pkg_resources ok:', pkg_resources.__file__); print('fastcore', fastcore.__version__); print('nbdev', nbdev.__version__)"
           # Run the documentation builder
-          python -m nbdev.quarto
+          python -c "from nbdev.quarto import nbdev_docs; nbdev_docs()"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
