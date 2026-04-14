@@ -6,3 +6,5 @@ website:
       - 01_setup.ipynb
       - 02_download_ref.ipynb
       - 03_liftover_pos.ipynb
+      - 04_developers.ipynb
+      - 05_examples.ipynb

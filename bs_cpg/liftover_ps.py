@@ -15,13 +15,22 @@ def cpg_reads(chromosomes: Sequence, positions: Sequence, ref_genome: 'Path | st
     """
     Fetch the 2bp sequence starting at each given genomic position from a reference genome.
 
-    - chromosomes: list-like of chromosome names (e.g., 'chr1' or '1').
-    - positions: list-like of genomic positions (ints). If index_base==1, positions are 1-based; if 0, 0-based.
-    - ref_genome: genome name (e.g., 'hg19'), a path to a bgzipped FASTA, or an open pysam.FastaFile.
-    - index_base: 0 or 1 (default: 1).
+    This function retrieves CpG sites from a reference genome by fetching 2-base sequences at
+    specified positions. It intelligently handles different chromosome naming conventions (e.g., 'chr1' vs '1').
 
-    Returns a pandas Series of the fetched 2-mer (uppercased). None when unavailable.
-    Also tolerates 'chr' vs no 'chr' chromosome naming by resolving once per unique chromosome.
+    Args:
+        chromosomes: list-like of chromosome names (e.g., 'chr1' or '1').
+        positions: list-like of genomic positions (ints). If index_base==1, positions are 1-based; if 0, 0-based.
+        ref_genome: genome name (e.g., 'hg19'), a path to a bgzipped FASTA, or an open pysam.FastaFile.
+        index_base: 0 or 1 (default: 1). Specifies if input positions are 0-based or 1-based.
+
+    Returns:
+        pd.Series: The fetched 2-bp sequences (uppercased). None when unavailable.
+    
+    Examples:
+        >>> # Fetch CpG reads from sample data
+        >>> reads = cpg_reads(df['chromosome'], df['pos'], 'hg19', index_base=1)
+        >>> print(reads.head())
     """
     import pysam as _pysam
     import pandas as _pd
@@ -107,8 +116,22 @@ def cpg_reads(chromosomes: Sequence, positions: Sequence, ref_genome: 'Path | st
 
 # %% ../nbs/03_liftover_pos.ipynb 14
 def cpg_percent(reads) -> float:
-    """Return the percent of entries equal to 'CG' (case-insensitive) in `reads`.
-    Accepts any iterable/Series; ignores NA/None.
+    """
+    Calculate the percentage of valid CpG sites in a dataset.
+    
+    Returns the percent of entries equal to 'CG' (case-insensitive) in `reads`.
+    Accepts any iterable/Series; ignores NA/None values.
+    
+    Args:
+        reads: An iterable (list, Series, etc.) of 2-bp sequences.
+    
+    Returns:
+        float: Percentage of entries that are 'CG' (0-100).
+    
+    Examples:
+        >>> reads = cpg_reads(df['chromosome'], df['pos'], 'hg19')
+        >>> percent_cg = cpg_percent(reads)
+        >>> print(f"CpG sites: {percent_cg:.1f}%")
     """
     import pandas as _pd
     if reads is None:
@@ -129,10 +152,32 @@ def guess_ref_and_index_base(
     index_bases: Sequence[int] = (0, 1),
 ) -> Dict[str, Any]:
     """
-    Try combinations of ref_genome and index_base, compute CG percent, and
-    return the best guess (max percent) along with a summary of all tries.
-
-    Returns a dict with keys: best_genome, best_index_base, best_percent, results (list of dicts).
+    Automatically identify the most likely reference genome and index base.
+    
+    This function tries combinations of reference genomes and index bases,
+    calculating the percentage of valid CpG sites for each combination.
+    It returns the combination with the highest CpG percentage as the best guess.
+    
+    Args:
+        chromosomes: Chromosome identifiers (e.g., ['chr1', 'chr2']).
+        positions: Genomic positions corresponding to chromosomes.
+        ref_genomes: List of genome names or paths to test (e.g., ['hg19', 'hg38']).
+        index_bases: List of index bases to test (default: [0, 1]).
+    
+    Returns:
+        dict: Contains:
+            - best_genome: Most likely genome name/path
+            - best_index_base: Most likely index base (0 or 1)
+            - best_percent: Percentage of CpG sites with best parameters
+            - results: List of dicts with all tried combinations
+    
+    Examples:
+        >>> result = guess_ref_and_index_base(
+        ...     df['chromosome'], 
+        ...     df['pos'],
+        ...     ref_genomes=['hg19', 'hg38']
+        ... )
+        >>> print(f"Best genome: {result['best_genome']} ({result['best_percent']:.1f}% CpG)")
     """
     from bs_cpg.download_ref import get_ref_genome
     results = []
@@ -183,6 +228,51 @@ def liftover_positions(
     index_base_to: int = 1,
     return_df: bool = False,
 ) -> Union[Tuple[List[Optional[str]], List[Optional[int]]], "_pd.DataFrame"]:
+    """
+    Convert genomic coordinates between different genome builds or adjust index bases.
+    
+    This function performs liftover operations when both genome_from and genome_to are specified,
+    or simple base conversion when both are None. It handles edge cases like unmapped regions,
+    invalid coordinates, and chromosome naming variations (e.g., 'chr1' vs '1').
+    
+    Args:
+        chromosomes: Sequence of chromosome identifiers (e.g., ['chr1', 'chr2']).
+        positions: Sequence of genomic positions. Must be same length as chromosomes.
+        genome_from: Source genome build (e.g., 'hg19'). Required for liftover.
+        genome_to: Target genome build (e.g., 'hg38'). Required for liftover.
+        index_base_from: Input indexing system (0 or 1, default: 1 for 1-based).
+        index_base_to: Output indexing system (0 or 1, default: 1 for 1-based).
+        return_df: If True, return results as a pandas DataFrame; else return tuple of lists.
+    
+    Returns:
+        Tuple[List, List] or pd.DataFrame:
+            If return_df=False: (new_chromosomes, new_positions) where unmapped positions are None.
+            If return_df=True: DataFrame with detailed input/output columns.
+    
+    Raises:
+        ValueError: If chromosomes and positions have different lengths, or invalid bases.
+        ImportError: If pandas is required (return_df=True) but not installed.
+    
+    Examples:
+        >>> # Liftover from hg19 to hg38 (1-based to 1-based)
+        >>> new_chroms, new_pos = liftover_positions(
+        ...     chromosomes=['chr1', 'chr1'],
+        ...     positions=[100001, 200000],
+        ...     genome_from='hg19',
+        ...     genome_to='hg38',
+        ...     index_base_from=1,
+        ...     index_base_to=1
+        ... )
+        >>> print(list(zip(new_chroms, new_pos)))
+        >>> 
+        >>> # Base conversion only (no liftover)
+        >>> new_chroms, new_pos = liftover_positions(
+        ...     chromosomes=['chr1'],
+        ...     positions=[100],
+        ...     index_base_from=0,
+        ...     index_base_to=1
+        ... )
+    """
 
     if len(chromosomes) != len(positions):
         raise ValueError(
