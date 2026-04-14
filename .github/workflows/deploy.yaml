@@ -35,10 +35,10 @@ jobs:
           # Pin setuptools to keep pkg_resources available for nbdev
           python -m pip install "setuptools<81"
           # Pin compatible nbdev dependency stack
-          python -m pip install "fastcore<1.8" nbdev==2.3.34 execnb==0.1.11
+          python -m pip install "fastcore<1.8" nbdev==2.3.34 execnb==0.1.11 "ipython<9"
           # Install the local package and dev dependencies
           python -m pip install -e ".[dev]"
-          python -c "import pkg_resources, fastcore, nbdev; from execnb.nbio import read_nb; print('setuptools pkg_resources ok:', pkg_resources.__file__); print('fastcore', fastcore.__version__); print('nbdev', nbdev.__version__)"
+          python -c "import pkg_resources, fastcore, nbdev, IPython; from execnb.nbio import read_nb; from IPython.utils.text import strip_ansi; print('setuptools pkg_resources ok:', pkg_resources.__file__); print('fastcore', fastcore.__version__); print('nbdev', nbdev.__version__); print('ipython', IPython.__version__)"
           # Run the documentation builder
           python -c "from nbdev.quarto import nbdev_docs; nbdev_docs()"
 
