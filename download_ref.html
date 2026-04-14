@@ -2,14 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Download reference genomes, chain files.">
+<meta name="description" content="Download reference genomes and liftover chain files from UCSC.">
 
 <title>download_ref – bs-cpg</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -68,15 +71,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="./">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-baedc78cbf92349237790bf011c153e8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-de52dc3353fe04aa4d07820b7139bd46.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -108,10 +110,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <link rel="stylesheet" href="styles.css">
 <meta property="og:title" content="download_ref – bs-cpg">
-<meta property="og:description" content="Download reference genomes, chain files.">
+<meta property="og:description" content="Download reference genomes and liftover chain files from UCSC.">
 <meta property="og:site_name" content="bs-cpg">
 <meta name="twitter:title" content="download_ref – bs-cpg">
-<meta name="twitter:description" content="Download reference genomes, chain files.">
+<meta name="twitter:description" content="Download reference genomes and liftover chain files from UCSC.">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -178,6 +180,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">liftover_pos</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./developers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Developer Guide</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./examples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Examples and Tutorials</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -188,8 +202,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#download-reference-genomes" id="toc-download-reference-genomes" class="nav-link active" data-scroll-target="#download-reference-genomes">Download reference genomes</a>
+  <li><a href="#reference-genome-management" id="toc-reference-genome-management" class="nav-link active" data-scroll-target="#reference-genome-management">Reference Genome Management</a>
   <ul class="collapse">
+  <li><a href="#downloading-reference-genomes" id="toc-downloading-reference-genomes" class="nav-link" data-scroll-target="#downloading-reference-genomes">Downloading Reference Genomes</a></li>
   <li><a href="#download_file" id="toc-download_file" class="nav-link" data-scroll-target="#download_file">download_file</a></li>
   <li><a href="#is_bgzipped" id="toc-is_bgzipped" class="nav-link" data-scroll-target="#is_bgzipped">is_bgzipped</a></li>
   <li><a href="#convert_to_bgzip" id="toc-convert_to_bgzip" class="nav-link" data-scroll-target="#convert_to_bgzip">convert_to_bgzip</a></li>
@@ -209,7 +224,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div>
   <div class="description">
-    Download reference genomes, chain files.
+    Download reference genomes and liftover chain files from UCSC.
   </div>
 </div>
 
@@ -227,55 +242,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
-<section id="download-reference-genomes" class="level1">
-<h1>Download reference genomes</h1>
+<section id="reference-genome-management" class="level2">
+<h2 class="anchored" data-anchor-id="reference-genome-management">Reference Genome Management</h2>
+<section id="downloading-reference-genomes" class="level3">
+<h3 class="anchored" data-anchor-id="downloading-reference-genomes">Downloading Reference Genomes</h3>
+<p>The module provides robust utilities for fetching and preparing bgzipped reference FASTA files from UCSC for use with <code>pysam</code> and other genomic tools.</p>
 <hr>
+<p><a href="https://github.com/magistak/bs-cpg/blob/main/bs_cpg/download_ref.py#L20" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
 <section id="download_file" class="level3">
 <h3 class="anchored" data-anchor-id="download_file">download_file</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> download_file(</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    url:<span class="bu">str</span>, filename:<span class="bu">str</span>, sub_dir:Path<span class="op">=</span><span class="va">None</span>, verbose:<span class="bu">bool</span><span class="op">=</span><span class="va">True</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>):</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><em>A general utility to download a file, with optional status messages and a progress bar.</em></p>
+<blockquote class="blockquote">
+<pre><code> download_file (url:str, filename:str, sub_dir:pathlib.Path=None,
+                verbose:bool=True)</code></pre>
+</blockquote>
+<p>*A general utility to download a file, with optional status messages and a progress bar.</p>
 <p>Args: url (str): The URL of the file to download. filename (str): The name for the saved file. sub_dir (Path, optional): A subdirectory under the main data path. Defaults to None. verbose (bool, optional): If True, prints status messages and shows a progress bar. Defaults to True.</p>
-<p>Returns: Path: The full path to the downloaded file, or None on error.</p>
+<p>Returns: Path: The full path to the downloaded file, or None on error.*</p>
 <hr>
+<p><a href="https://github.com/magistak/bs-cpg/blob/main/bs_cpg/download_ref.py#L78" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="is_bgzipped" class="level3">
 <h3 class="anchored" data-anchor-id="is_bgzipped">is_bgzipped</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_bgzipped(</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    filepath:Path</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span><span class="bu">bool</span>:</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><em>Checks if a file is block-gzipped (BGZF) by reading its header.</em></p>
+<blockquote class="blockquote">
+<pre><code> is_bgzipped (filepath:pathlib.Path)</code></pre>
+</blockquote>
+<p>*Checks if a file is block-gzipped (BGZF) by reading its header.</p>
 <p>Args: filepath (Path): The path to the file to check.</p>
-<p>Returns: bool: True if the file is in BGZF format, False otherwise.</p>
+<p>Returns: bool: True if the file is in BGZF format, False otherwise.*</p>
 <hr>
+<p><a href="https://github.com/magistak/bs-cpg/blob/main/bs_cpg/download_ref.py#L104" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="convert_to_bgzip" class="level3">
 <h3 class="anchored" data-anchor-id="convert_to_bgzip">convert_to_bgzip</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> convert_to_bgzip(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    input_path:Path, output_path:Path</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span><span class="bu">bool</span>:</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><em>Converts a standard gzip file to a bgzip file using command-line tools.</em> This function replicates the command: <code>gunzip -c &lt;input&gt; | bgzip &gt; &lt;output&gt;</code>.</p>
+<blockquote class="blockquote">
+<pre><code> convert_to_bgzip (input_path:pathlib.Path, output_path:pathlib.Path)</code></pre>
+</blockquote>
+<p>*Converts a standard gzip file to a bgzip file using command-line tools. This function replicates the command: <code>gunzip -c &lt;input&gt; | bgzip &gt; &lt;output&gt;</code>.</p>
 <p>Args: input_path (Path): The path to the input gzip file. output_path (Path): The path for the output bgzip file.</p>
-<p>Returns: bool: True if conversion was successful, False otherwise.</p>
+<p>Returns: bool: True if conversion was successful, False otherwise.*</p>
 <hr>
+<p><a href="https://github.com/magistak/bs-cpg/blob/main/bs_cpg/download_ref.py#L148" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="get_ref_genome" class="level3">
 <h3 class="anchored" data-anchor-id="get_ref_genome">get_ref_genome</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ref_genome(</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    name:<span class="bu">str</span>, kwargs:VAR_KEYWORD</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>):</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><em>Downloads a reference genome and ensures it is properly compressed with</em> bgzip for use with pysam.</p>
+<blockquote class="blockquote">
+<pre><code> get_ref_genome (name:str, **kwargs)</code></pre>
+</blockquote>
+<p><em>Downloads a reference genome and ensures it is properly compressed with bgzip for use with pysam.</em></p>
 <div id="2d648b56-4484-4c4c-812f-5927608ebd82" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>get_ref_genome(<span class="st">"hg38"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: Download and prepare hg38 reference genome</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ref_path = get_ref_genome("hg38")</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># print(f"Reference genome saved to: {ref_path}")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>✅ Final file '/mnt/idms/home/magyary/.bs-cpg/hg38.fa.bgz' already exists.</code></pre>
 </div>
@@ -284,23 +302,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="a640d34c-adc6-4cbb-9bfe-02b2eeb4ef27" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">"hg38"</span>.capitalize()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">### Liftover Chain Files</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>Download UCSC liftover chain files <span class="cf">for</span> converting coordinates between genome builds:</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <pre><code>'Hg38'</code></pre>
 </div>
 </div>
 <hr>
+<p><a href="https://github.com/magistak/bs-cpg/blob/main/bs_cpg/download_ref.py#L189" target="_blank" style="float:right; font-size:smaller">source</a></p>
 </section>
 <section id="get_liftover_chain" class="level3">
 <h3 class="anchored" data-anchor-id="get_liftover_chain">get_liftover_chain</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_liftover_chain(</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    genome_from:<span class="bu">str</span>, genome_to:<span class="bu">str</span>, kwargs:VAR_KEYWORD</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>):</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><em>Download liftover chain file between genome versions from UCSC goldenPath liftOver.</em> To get path to downloaded file use with <code>verbose = False</code>.</p>
+<blockquote class="blockquote">
+<pre><code> get_liftover_chain (genome_from:str, genome_to:str, **kwargs)</code></pre>
+</blockquote>
+<p>*Download liftover chain file between genome versions from UCSC goldenPath liftOver.</p>
+<p>Chain files enable coordinate conversion between different genome builds. For example, converting hg19 (GRCh37) coordinates to hg38 (GRCh38).</p>
 <p>Args: genome_from (str): The original reference genome name (e.g., ‘hg19’, ‘hg38’, ‘mm10’). genome_to (str): The new reference genome name (e.g., ‘hg19’, ‘hg38’, ‘mm10’). **kwargs: Additional keyword arguments to be passed to download_file() (e.g., verbose=False)</p>
 <p>Returns: Path: The path to the downloaded file, or None if an error occurred.</p>
+<p>Examples: &gt;&gt;&gt; # Download chain file for hg19 to hg38 conversion &gt;&gt;&gt; chain_path = get_liftover_chain(“hg19”, “hg38”) &gt;&gt;&gt; print(f”Chain file saved to: {chain_path}“)*</p>
 
 
 </section>

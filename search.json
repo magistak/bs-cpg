@@ -1,12 +1,22 @@
 [
   {
-    "objectID": "download_ref.html",
-    "href": "download_ref.html",
-    "title": "download_ref",
+    "objectID": "download_processed_geo.html",
+    "href": "download_processed_geo.html",
+    "title": "download_processed",
     "section": "",
-    "text": "Download reference genomes\n\n\ndownload_file\n\ndef download_file(\n    url:str, filename:str, sub_dir:Path=None, verbose:bool=True\n):\n\nA general utility to download a file, with optional status messages and a progress bar.\nArgs: url (str): The URL of the file to download. filename (str): The name for the saved file. sub_dir (Path, optional): A subdirectory under the main data path. Defaults to None. verbose (bool, optional): If True, prints status messages and shows a progress bar. Defaults to True.\nReturns: Path: The full path to the downloaded file, or None on error.\n\n\n\nis_bgzipped\n\ndef is_bgzipped(\n    filepath:Path\n)-&gt;bool:\n\nChecks if a file is block-gzipped (BGZF) by reading its header.\nArgs: filepath (Path): The path to the file to check.\nReturns: bool: True if the file is in BGZF format, False otherwise.\n\n\n\nconvert_to_bgzip\n\ndef convert_to_bgzip(\n    input_path:Path, output_path:Path\n)-&gt;bool:\n\nConverts a standard gzip file to a bgzip file using command-line tools. This function replicates the command: gunzip -c &lt;input&gt; | bgzip &gt; &lt;output&gt;.\nArgs: input_path (Path): The path to the input gzip file. output_path (Path): The path for the output bgzip file.\nReturns: bool: True if conversion was successful, False otherwise.\n\n\n\nget_ref_genome\n\ndef get_ref_genome(\n    name:str, kwargs:VAR_KEYWORD\n):\n\nDownloads a reference genome and ensures it is properly compressed with bgzip for use with pysam.\n\nget_ref_genome(\"hg38\")\n\n✅ Final file '/mnt/idms/home/magyary/.bs-cpg/hg38.fa.bgz' already exists.\n\n\n'/mnt/idms/home/magyary/.bs-cpg/hg38.fa.bgz'\n\n\n\n\"hg38\".capitalize()\n\n'Hg38'\n\n\n\n\n\nget_liftover_chain\n\ndef get_liftover_chain(\n    genome_from:str, genome_to:str, kwargs:VAR_KEYWORD\n):\n\nDownload liftover chain file between genome versions from UCSC goldenPath liftOver. To get path to downloaded file use with verbose = False.\nArgs: genome_from (str): The original reference genome name (e.g., ‘hg19’, ‘hg38’, ‘mm10’). genome_to (str): The new reference genome name (e.g., ‘hg19’, ‘hg38’, ‘mm10’). **kwargs: Additional keyword arguments to be passed to download_file() (e.g., verbose=False)\nReturns: Path: The path to the downloaded file, or None if an error occurred.",
+    "text": "The module provides a resilient wrapper around geofetch.Geofetcher that includes:\n\nAutomatic Retries: Uses exponential backoff to handle transient network failures.\nSmart Caching: Locally caches project metadata to avoid redundant network requests.\nClear Interface: Simple methods for listing and downloading datasets.\n\n\n\n\nsource\n\n\n\n\n Geofetcher (name:str='', metadata_root:str='', metadata_folder:str='',\n             just_metadata:bool=False, refresh_metadata:bool=False,\n             config_template:str|None=None,\n             pipeline_samples:str|None=None,\n             pipeline_project:str|None=None, skip:int=0,\n             acc_anno:bool=False, use_key_subset:bool=False,\n             processed:bool=False, data_source:str='samples',\n             filter:str|None=None, filter_size:str|None=None,\n             geo_folder:str='.', split_experiments:bool=False,\n             bam_folder:str='', fq_folder:str='', sra_folder:str='',\n             bam_conversion:bool=False, picard_path:str='',\n             input:str|None=None, const_limit_project:int=50,\n             const_limit_discard:int=1000, attr_limit_truncate:int=500,\n             max_soft_size:str='1GB', discard_soft:bool=False,\n             add_dotfile:bool=False, disable_progressbar:bool=False,\n             add_convert_modifier:bool=False, opts:object|None=None,\n             max_prefetch_size:str|int|None=None, **kwargs:object)\n\nClass to download or get projects, metadata, data from GEO and SRA.\n\n# Example: Create a Geofetcher instance\ngeo = Geofetcher(just_metadata=True)\nacc = 'GSE51239'\nprint(f\"Fetching metadata for project: {acc}\")\n\n[INFO] [18:08:41] Metadata folder: /mnt/idms/home/magyary/bs-dna-methyl/nbs/project_name\n\n\n\n\n\nQuery GEO for available processed files within a project:\n\n# Example: Get project metadata\n# projects = geo.get_projects(acc)\n# projects\n\n\n[INFO] [18:08:41] Metadata folder: /mnt/idms/home/magyary/bs-dna-methyl/nbs/project_name\n\n[INFO] [18:08:41] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:08:41] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:08:41] Skipped 0 accessions. Starting now.\n\n[INFO] [18:08:41] Processing accession 1 of 1: 'GSE51239'\n\n[INFO] [18:08:43] Processed 48 samples.\n\n[INFO] [18:08:43] Expanding metadata list...\n\n[INFO] [18:08:43] Found SRA Project accession: SRP030612\n\n[INFO] [18:08:43] Downloading SRP030612 sra metadata\n\n[INFO] [18:08:46] Parsing SRA file to download SRR records\n\n[INFO] [18:08:46] Dry run, no data will be downloaded\n\n[INFO] [18:08:46] Finished processing 1 accession(s)\n\n[INFO] [18:08:46] Cleaning soft files ...\n\n[INFO] [18:08:46] Creating complete project annotation sheets and config file...\n\n\n\n\n{'GSE51239_raw': Project\n 48 samples (showing first 20): hsperm-524-90, hsperm-530-90, hsperm-533-90, hsperm-534-90, h8c-1, h8c-2, hblast-1, hblast-2, hblast-3, hblastsingle-2, hblastsingle-5, hicm-1, hicm-2, hte-1, hte-2, hesp0-e1, hesp0-e4, hesp0-e5, hesp1-e1, hesp1-e4\n Sections: name, pep_version, sample_table, experiment_metadata, sample_modifiers, description}\n\n\n\n\n\nCreate a Geofetcher instance configured for downloading processed data:\n\n# projects_files = geof.get_projects(acc, just_metadata=False, ignore_cache=True)\n\n\n[INFO] [18:09:55] Metadata folder: /mnt/idms/home/magyary/bs-dna-methyl/nbs/project_name\n\n[INFO] [18:09:55] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:09:55] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:09:55] Skipped 0 accessions. Starting now.\n\n[INFO] [18:09:55] Processing accession 1 of 1: 'GSE51239'\n\n[INFO] [18:09:57] Processed 48 samples.\n\n[INFO] [18:09:57] Expanding metadata list...\n\n[INFO] [18:09:57] Found SRA Project accession: SRP030612\n\n[INFO] [18:09:57] Downloading SRP030612 sra metadata\n\n[INFO] [18:09:58] Parsing SRA file to download SRR records\n\n[INFO] [18:09:58] Getting SRR: SRR1003182  in (GSE51239)\n\n\n\n\n2025-07-28T16:09:58 prefetch.3.2.1: 1) Resolving 'SRR1003182'...\n2025-07-28T16:09:59 prefetch.3.2.1: Current preference is set to retrieve SRA Normalized Format files with full base quality scores\n\n\n[INFO] [18:10:00] Getting SRR: SRR1003183  in (GSE51239)\n\n\n2025-07-28T16:10:00 prefetch.3.2.1: 1) 'SRR1003182' is found locally \n2025-07-28T16:10:00 prefetch.3.2.1: 1) Resolving 'SRR1003183'...\n2025-07-28T16:10:01 prefetch.3.2.1: Current preference is set to retrieve SRA Normalized Format files with full base quality scores\n2025-07-28T16:10:02 prefetch.3.2.1: 1) Downloading 'SRR1003183'...\n2025-07-28T16:10:02 prefetch.3.2.1:  SRA Normalized Format file is being retrieved\n2025-07-28T16:10:02 prefetch.3.2.1:  Downloading via HTTPS...\n2025-07-28T16:10:02 prefetch.3.2.1:    Continue download of 'SRR1003183' from 154660408\n\n\n\n\n\nOnce downloaded, you can explore the sample table to see available processed files:",
     "crumbs": [
-      "download_ref"
+      "download_processed"
+    ]
+  },
+  {
+    "objectID": "download_processed_geo.html#geo-integration-with-resilient-fetching",
+    "href": "download_processed_geo.html#geo-integration-with-resilient-fetching",
+    "title": "download_processed",
+    "section": "",
+    "text": "The module provides a resilient wrapper around geofetch.Geofetcher that includes:\n\nAutomatic Retries: Uses exponential backoff to handle transient network failures.\nSmart Caching: Locally caches project metadata to avoid redundant network requests.\nClear Interface: Simple methods for listing and downloading datasets.\n\n\n\n\nsource\n\n\n\n\n Geofetcher (name:str='', metadata_root:str='', metadata_folder:str='',\n             just_metadata:bool=False, refresh_metadata:bool=False,\n             config_template:str|None=None,\n             pipeline_samples:str|None=None,\n             pipeline_project:str|None=None, skip:int=0,\n             acc_anno:bool=False, use_key_subset:bool=False,\n             processed:bool=False, data_source:str='samples',\n             filter:str|None=None, filter_size:str|None=None,\n             geo_folder:str='.', split_experiments:bool=False,\n             bam_folder:str='', fq_folder:str='', sra_folder:str='',\n             bam_conversion:bool=False, picard_path:str='',\n             input:str|None=None, const_limit_project:int=50,\n             const_limit_discard:int=1000, attr_limit_truncate:int=500,\n             max_soft_size:str='1GB', discard_soft:bool=False,\n             add_dotfile:bool=False, disable_progressbar:bool=False,\n             add_convert_modifier:bool=False, opts:object|None=None,\n             max_prefetch_size:str|int|None=None, **kwargs:object)\n\nClass to download or get projects, metadata, data from GEO and SRA.\n\n# Example: Create a Geofetcher instance\ngeo = Geofetcher(just_metadata=True)\nacc = 'GSE51239'\nprint(f\"Fetching metadata for project: {acc}\")\n\n[INFO] [18:08:41] Metadata folder: /mnt/idms/home/magyary/bs-dna-methyl/nbs/project_name\n\n\n\n\n\nQuery GEO for available processed files within a project:\n\n# Example: Get project metadata\n# projects = geo.get_projects(acc)\n# projects\n\n\n[INFO] [18:08:41] Metadata folder: /mnt/idms/home/magyary/bs-dna-methyl/nbs/project_name\n\n[INFO] [18:08:41] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:08:41] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:08:41] Skipped 0 accessions. Starting now.\n\n[INFO] [18:08:41] Processing accession 1 of 1: 'GSE51239'\n\n[INFO] [18:08:43] Processed 48 samples.\n\n[INFO] [18:08:43] Expanding metadata list...\n\n[INFO] [18:08:43] Found SRA Project accession: SRP030612\n\n[INFO] [18:08:43] Downloading SRP030612 sra metadata\n\n[INFO] [18:08:46] Parsing SRA file to download SRR records\n\n[INFO] [18:08:46] Dry run, no data will be downloaded\n\n[INFO] [18:08:46] Finished processing 1 accession(s)\n\n[INFO] [18:08:46] Cleaning soft files ...\n\n[INFO] [18:08:46] Creating complete project annotation sheets and config file...\n\n\n\n\n{'GSE51239_raw': Project\n 48 samples (showing first 20): hsperm-524-90, hsperm-530-90, hsperm-533-90, hsperm-534-90, h8c-1, h8c-2, hblast-1, hblast-2, hblast-3, hblastsingle-2, hblastsingle-5, hicm-1, hicm-2, hte-1, hte-2, hesp0-e1, hesp0-e4, hesp0-e5, hesp1-e1, hesp1-e4\n Sections: name, pep_version, sample_table, experiment_metadata, sample_modifiers, description}\n\n\n\n\n\nCreate a Geofetcher instance configured for downloading processed data:\n\n# projects_files = geof.get_projects(acc, just_metadata=False, ignore_cache=True)\n\n\n[INFO] [18:09:55] Metadata folder: /mnt/idms/home/magyary/bs-dna-methyl/nbs/project_name\n\n[INFO] [18:09:55] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:09:55] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:09:55] Skipped 0 accessions. Starting now.\n\n[INFO] [18:09:55] Processing accession 1 of 1: 'GSE51239'\n\n[INFO] [18:09:57] Processed 48 samples.\n\n[INFO] [18:09:57] Expanding metadata list...\n\n[INFO] [18:09:57] Found SRA Project accession: SRP030612\n\n[INFO] [18:09:57] Downloading SRP030612 sra metadata\n\n[INFO] [18:09:58] Parsing SRA file to download SRR records\n\n[INFO] [18:09:58] Getting SRR: SRR1003182  in (GSE51239)\n\n\n\n\n2025-07-28T16:09:58 prefetch.3.2.1: 1) Resolving 'SRR1003182'...\n2025-07-28T16:09:59 prefetch.3.2.1: Current preference is set to retrieve SRA Normalized Format files with full base quality scores\n\n\n[INFO] [18:10:00] Getting SRR: SRR1003183  in (GSE51239)\n\n\n2025-07-28T16:10:00 prefetch.3.2.1: 1) 'SRR1003182' is found locally \n2025-07-28T16:10:00 prefetch.3.2.1: 1) Resolving 'SRR1003183'...\n2025-07-28T16:10:01 prefetch.3.2.1: Current preference is set to retrieve SRA Normalized Format files with full base quality scores\n2025-07-28T16:10:02 prefetch.3.2.1: 1) Downloading 'SRR1003183'...\n2025-07-28T16:10:02 prefetch.3.2.1:  SRA Normalized Format file is being retrieved\n2025-07-28T16:10:02 prefetch.3.2.1:  Downloading via HTTPS...\n2025-07-28T16:10:02 prefetch.3.2.1:    Continue download of 'SRR1003183' from 154660408\n\n\n\n\n\nOnce downloaded, you can explore the sample table to see available processed files:",
+    "crumbs": [
+      "download_processed"
     ]
   },
   {
@@ -14,59 +24,19 @@
     "href": "liftover_pos.html",
     "title": "liftover_pos",
     "section": "",
-    "text": "Import example data\n\n# export\nimport pandas as pd\nimport re\nfrom bs_cpg.setup import *\nfrom bs_cpg.download_ref import *\nfrom pathlib import Path\nimport pysam\n\nDownloading sample data to /tmp/bs-cpg-data/.bs-cpg/sample_cpg_df.parquet...\n\n\n\ndf = read_sample_cpg([\"chromosome\", \"pos\"])\ndf\n\n\n\n\n\n\n\n\nchromosome\npos\n\n\n\n\n1594976\nchr11\n30607691\n\n\n41581\nchr1\n10269003\n\n\n2926242\nchrX\n55066102\n\n\n573570\nchr3\n169781668\n\n\n1930113\nchr14\n59950571\n\n\n...\n...\n...\n\n\n2556779\nchr19\n17438314\n\n\n452764\nchr2\n241331303\n\n\n1554781\nchr10\n135171502\n\n\n898587\nchr6\n31869119\n\n\n1764855\nchr12\n70024545\n\n\n\n\n1000 rows × 2 columns\n\n\n\n\ndf[\"chromosome\"].to_list()[:5]\n\n['chr11', 'chr1', 'chrX', 'chr3', 'chr14']\n\n\n\n# import pysam\n# fasta = pysam.FastaFile(\"data/hg38.fa\")\n# def fetch_seq(row):\n#     return fasta.fetch(row[\"new_chrom\"], row[\"Start\"], row[\"End\"])\n\n\nfasta = pysam.FastaFile(str(get_ref_genome(\"hg19\")))\n\n✅ Final file '/mnt/idms/home/magyary/.bs-cpg/hg19.fa.bgz' already exists.\n\n\n\nfasta.fetch(reference=\"chr1\", start=90000, end=90050)\n\n'tctcttgctgccctggagaccagctgccccacgaaggaaacagagccaac'\n\n\n\n\ncpg_reads\n\ndef cpg_reads(\n    chromosomes:Sequence, positions:Sequence, ref_genome:'Path | str | pysam.FastaFile', index_base:int=1\n):\n\nFetch the 2bp sequence starting at each given genomic position from a reference genome.\n\nchromosomes: list-like of chromosome names (e.g., ‘chr1’ or ‘1’).\npositions: list-like of genomic positions (ints). If index_base==1, positions are 1-based; if 0, 0-based.\nref_genome: genome name (e.g., ‘hg19’), a path to a bgzipped FASTA, or an open pysam.FastaFile.\nindex_base: 0 or 1 (default: 1).\n\nReturns a pandas Series of the fetched 2-mer (uppercased). None when unavailable. Also tolerates ‘chr’ vs no ‘chr’ chromosome naming by resolving once per unique chromosome.\n\n\n\ncpg_percent\n\ndef cpg_percent(\n    reads\n)-&gt;float:\n\nReturn the percent of entries equal to ‘CG’ (case-insensitive) in reads. Accepts any iterable/Series; ignores NA/None.\n\n\n\nguess_ref_and_index_base\n\ndef guess_ref_and_index_base(\n    chromosomes, positions, ref_genomes:Sequence[Union[str, 'Path']], index_bases:Sequence[int]=(0, 1)\n)-&gt;Dict[str, Any]:\n\nTry combinations of ref_genome and index_base, compute CG percent, and return the best guess (max percent) along with a summary of all tries.\nReturns a dict with keys: best_genome, best_index_base, best_percent, results (list of dicts).\n\nget_liftover_chain(\"hg19\", \"hg38\")\n\n✅ File '/mnt/idms/home/magyary/.bs-cpg/hg19ToHg38.over.chain.gz' already exists. Skipping.\n\n\nPath('/mnt/idms/home/magyary/.bs-cpg/hg19ToHg38.over.chain.gz')\n\n\n\n\n\nliftover_positions\n\ndef liftover_positions(\n    chromosomes:Sequence, positions:Sequence, genome_from:Optional[str]=None, genome_to:Optional[str]=None,\n    index_base_from:int=1, index_base_to:int=1, return_df:bool=False\n)-&gt;Union[Tuple[List[Optional[str]], List[Optional[int]]], '_pd.DataFrame']:\n\n\n# quick invariance checks (smoke tests)\n# These won't fail the notebook export but help catch accidental regressions when running interactively.\ntry:\n    # 0-&gt;0 should match 1-&gt;1 adjusted by conversion on both ends.\n    ch0, p0 = liftover_positions([\"chr1\"], [100000], \"hg19\", \"hg38\", index_base_from=0, index_base_to=0)\n    ch1, p1 = liftover_positions([\"chr1\"], [100001], \"hg19\", \"hg38\", index_base_from=1, index_base_to=1)\n    if ch0[0] is not None and ch1[0] is not None:\n        assert ch0[0] == ch1[0]\n        assert p0[0] == p1[0]\nexcept Exception:\n    # Non-fatal in notebook context\n    pass",
+    "text": "This module provides tools for: - Genomic Liftover: Convert coordinates between different genome builds (e.g., hg19 to hg38). - CpG Validation: Fetch sequences at positions and verify they contain valid CpG sites. - Reference Detection: Automatically determine the most likely reference genome for unknown data.\n\n\n\n\n\n\n# export\nimport pandas as pd\nimport re\nfrom bs_cpg.setup import *\nfrom bs_cpg.download_ref import *\nfrom pathlib import Path\nimport pysam\n\nDownloading sample data to /tmp/bs-cpg-data/.bs-cpg/sample_cpg_df.parquet...\n\n\n\n# Example: Load sample CpG data\ndf = read_sample_cpg([\"chromosome\", \"pos\"])\nprint(f\"Sample data shape: {df.shape}\")\nprint(df.head())\n\n\n\n\n\n\n\n\nchromosome\npos\n\n\n\n\n1594976\nchr11\n30607691\n\n\n41581\nchr1\n10269003\n\n\n2926242\nchrX\n55066102\n\n\n573570\nchr3\n169781668\n\n\n1930113\nchr14\n59950571\n\n\n...\n...\n...\n\n\n2556779\nchr19\n17438314\n\n\n452764\nchr2\n241331303\n\n\n1554781\nchr10\n135171502\n\n\n898587\nchr6\n31869119\n\n\n1764855\nchr12\n70024545\n\n\n\n\n1000 rows × 2 columns\n\n\n\n\n# View first few chromosome values\nprint(\"Sample chromosomes:\")\nprint(df[\"chromosome\"].to_list()[:5])\n\n['chr11', 'chr1', 'chrX', 'chr3', 'chr14']\n\n\n\n# import pysam\n# fasta = pysam.FastaFile(\"data/hg38.fa\")\n# def fetch_seq(row):\n#     return fasta.fetch(row[\"new_chrom\"], row[\"Start\"], row[\"End\"])\n\n\n## CpG Site Validation\n\n### Fetching Sequences from Reference Genomes\n\n# Example: Open a reference genome\n# fasta = pysam.FastaFile(str(get_ref_genome(\"hg19\")))\n\n✅ Final file '/mnt/idms/home/magyary/.bs-cpg/hg19.fa.bgz' already exists.\n\n\n\n# Example: Fetch a 50bp sequence from chr1 (0-based coordinates)\n# seq = fasta.fetch(reference=\"chr1\", start=90000, end=90050)\n# print(f\"Sequence: {seq}\")\n\n'tctcttgctgccctggagaccagctgccccacgaaggaaacagagccaac'\n\n\n\nsource\n\n\n\n\n cpg_reads (chromosomes:Sequence, positions:Sequence,\n            ref_genome:Path|str|pysam.FastaFile, index_base:int=1)\n\n*Fetch the 2bp sequence starting at each given genomic position from a reference genome.\nThis function retrieves CpG sites from a reference genome by fetching 2-base sequences at specified positions. It intelligently handles different chromosome naming conventions (e.g., ‘chr1’ vs ‘1’).\nArgs: chromosomes: list-like of chromosome names (e.g., ‘chr1’ or ‘1’). positions: list-like of genomic positions (ints). If index_base==1, positions are 1-based; if 0, 0-based. ref_genome: genome name (e.g., ‘hg19’), a path to a bgzipped FASTA, or an open pysam.FastaFile. index_base: 0 or 1 (default: 1). Specifies if input positions are 0-based or 1-based.\nReturns: pd.Series: The fetched 2-bp sequences (uppercased). None when unavailable.\nExamples: &gt;&gt;&gt; # Fetch CpG reads from sample data &gt;&gt;&gt; reads = cpg_reads(df[‘chromosome’], df[‘pos’], ‘hg19’, index_base=1) &gt;&gt;&gt; print(reads.head())*\n\nsource\n\n\n\n\n cpg_percent (reads)\n\n*Calculate the percentage of valid CpG sites in a dataset.\nReturns the percent of entries equal to ‘CG’ (case-insensitive) in reads. Accepts any iterable/Series; ignores NA/None values.\nArgs: reads: An iterable (list, Series, etc.) of 2-bp sequences.\nReturns: float: Percentage of entries that are ‘CG’ (0-100).\nExamples: &gt;&gt;&gt; reads = cpg_reads(df[‘chromosome’], df[‘pos’], ‘hg19’) &gt;&gt;&gt; percent_cg = cpg_percent(reads) &gt;&gt;&gt; print(f”CpG sites: {percent_cg:.1f}%“)*\n\nsource\n\n\n\n\n guess_ref_and_index_base (chromosomes, positions,\n                           ref_genomes:Sequence[Union[str,ForwardRef('Path\n                           ')]], index_bases:Sequence[int]=(0, 1))\n\n*Automatically identify the most likely reference genome and index base.\nThis function tries combinations of reference genomes and index bases, calculating the percentage of valid CpG sites for each combination. It returns the combination with the highest CpG percentage as the best guess.\nArgs: chromosomes: Chromosome identifiers (e.g., [‘chr1’, ‘chr2’]). positions: Genomic positions corresponding to chromosomes. ref_genomes: List of genome names or paths to test (e.g., [‘hg19’, ‘hg38’]). index_bases: List of index bases to test (default: [0, 1]).\nReturns: dict: Contains: - best_genome: Most likely genome name/path - best_index_base: Most likely index base (0 or 1) - best_percent: Percentage of CpG sites with best parameters - results: List of dicts with all tried combinations\nExamples: &gt;&gt;&gt; result = guess_ref_and_index_base( … df[‘chromosome’], … df[‘pos’], … ref_genomes=[‘hg19’, ‘hg38’] … ) &gt;&gt;&gt; print(f”Best genome: {result[‘best_genome’]} ({result[‘best_percent’]:.1f}% CpG)“)*\n\n## Genomic Liftover\n\nConverting coordinates between genome builds (e.g., hg19 → hg38) is essential when working with data from different sources or genome versions.\n\n✅ File '/mnt/idms/home/magyary/.bs-cpg/hg19ToHg38.over.chain.gz' already exists. Skipping.\n\n\nPath('/mnt/idms/home/magyary/.bs-cpg/hg19ToHg38.over.chain.gz')\n\n\n\nsource\n\n\n\n\n liftover_positions (chromosomes:Sequence, positions:Sequence,\n                     genome_from:Optional[str]=None,\n                     genome_to:Optional[str]=None, index_base_from:int=1,\n                     index_base_to:int=1, return_df:bool=False)\n\n*Convert genomic coordinates between different genome builds or adjust index bases.\nThis function performs liftover operations when both genome_from and genome_to are specified, or simple base conversion when both are None. It handles edge cases like unmapped regions, invalid coordinates, and chromosome naming variations (e.g., ‘chr1’ vs ‘1’).\nArgs: chromosomes: Sequence of chromosome identifiers (e.g., [‘chr1’, ‘chr2’]). positions: Sequence of genomic positions. Must be same length as chromosomes. genome_from: Source genome build (e.g., ‘hg19’). Required for liftover. genome_to: Target genome build (e.g., ‘hg38’). Required for liftover. index_base_from: Input indexing system (0 or 1, default: 1 for 1-based). index_base_to: Output indexing system (0 or 1, default: 1 for 1-based). return_df: If True, return results as a pandas DataFrame; else return tuple of lists.\nReturns: Tuple[List, List] or pd.DataFrame: If return_df=False: (new_chromosomes, new_positions) where unmapped positions are None. If return_df=True: DataFrame with detailed input/output columns.\nRaises: ValueError: If chromosomes and positions have different lengths, or invalid bases. ImportError: If pandas is required (return_df=True) but not installed.\nExamples: &gt;&gt;&gt; # Liftover from hg19 to hg38 (1-based to 1-based) &gt;&gt;&gt; new_chroms, new_pos = liftover_positions( … chromosomes=[‘chr1’, ‘chr1’], … positions=[100001, 200000], … genome_from=‘hg19’, … genome_to=‘hg38’, … index_base_from=1, … index_base_to=1 … ) &gt;&gt;&gt; print(list(zip(new_chroms, new_pos))) &gt;&gt;&gt; &gt;&gt;&gt; # Base conversion only (no liftover) &gt;&gt;&gt; new_chroms, new_pos = liftover_positions( … chromosomes=[‘chr1’], … positions=[100], … index_base_from=0, … index_base_to=1 … )*\n\n# quick invariance checks (smoke tests)\n# These won't fail the notebook export but help catch accidental regressions when running interactively.\ntry:\n    # 0-&gt;0 should match 1-&gt;1 adjusted by conversion on both ends.\n    ch0, p0 = liftover_positions([\"chr1\"], [100000], \"hg19\", \"hg38\", index_base_from=0, index_base_to=0)\n    ch1, p1 = liftover_positions([\"chr1\"], [100001], \"hg19\", \"hg38\", index_base_from=1, index_base_to=1)\n    if ch0[0] is not None and ch1[0] is not None:\n        assert ch0[0] == ch1[0]\n        assert p0[0] == p1[0]\nexcept Exception:\n    # Non-fatal in notebook context\n    pass",
     "crumbs": [
       "liftover_pos"
     ]
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "bs-cpg",
+    "objectID": "liftover_pos.html#coordinate-processing-and-validation",
+    "href": "liftover_pos.html#coordinate-processing-and-validation",
+    "title": "liftover_pos",
     "section": "",
-    "text": "This file will become your README and also the index of your documentation.",
+    "text": "This module provides tools for: - Genomic Liftover: Convert coordinates between different genome builds (e.g., hg19 to hg38). - CpG Validation: Fetch sequences at positions and verify they contain valid CpG sites. - Reference Detection: Automatically determine the most likely reference genome for unknown data.\n\n\n\n\n\n\n# export\nimport pandas as pd\nimport re\nfrom bs_cpg.setup import *\nfrom bs_cpg.download_ref import *\nfrom pathlib import Path\nimport pysam\n\nDownloading sample data to /tmp/bs-cpg-data/.bs-cpg/sample_cpg_df.parquet...\n\n\n\n# Example: Load sample CpG data\ndf = read_sample_cpg([\"chromosome\", \"pos\"])\nprint(f\"Sample data shape: {df.shape}\")\nprint(df.head())\n\n\n\n\n\n\n\n\nchromosome\npos\n\n\n\n\n1594976\nchr11\n30607691\n\n\n41581\nchr1\n10269003\n\n\n2926242\nchrX\n55066102\n\n\n573570\nchr3\n169781668\n\n\n1930113\nchr14\n59950571\n\n\n...\n...\n...\n\n\n2556779\nchr19\n17438314\n\n\n452764\nchr2\n241331303\n\n\n1554781\nchr10\n135171502\n\n\n898587\nchr6\n31869119\n\n\n1764855\nchr12\n70024545\n\n\n\n\n1000 rows × 2 columns\n\n\n\n\n# View first few chromosome values\nprint(\"Sample chromosomes:\")\nprint(df[\"chromosome\"].to_list()[:5])\n\n['chr11', 'chr1', 'chrX', 'chr3', 'chr14']\n\n\n\n# import pysam\n# fasta = pysam.FastaFile(\"data/hg38.fa\")\n# def fetch_seq(row):\n#     return fasta.fetch(row[\"new_chrom\"], row[\"Start\"], row[\"End\"])\n\n\n## CpG Site Validation\n\n### Fetching Sequences from Reference Genomes\n\n# Example: Open a reference genome\n# fasta = pysam.FastaFile(str(get_ref_genome(\"hg19\")))\n\n✅ Final file '/mnt/idms/home/magyary/.bs-cpg/hg19.fa.bgz' already exists.\n\n\n\n# Example: Fetch a 50bp sequence from chr1 (0-based coordinates)\n# seq = fasta.fetch(reference=\"chr1\", start=90000, end=90050)\n# print(f\"Sequence: {seq}\")\n\n'tctcttgctgccctggagaccagctgccccacgaaggaaacagagccaac'\n\n\n\nsource\n\n\n\n\n cpg_reads (chromosomes:Sequence, positions:Sequence,\n            ref_genome:Path|str|pysam.FastaFile, index_base:int=1)\n\n*Fetch the 2bp sequence starting at each given genomic position from a reference genome.\nThis function retrieves CpG sites from a reference genome by fetching 2-base sequences at specified positions. It intelligently handles different chromosome naming conventions (e.g., ‘chr1’ vs ‘1’).\nArgs: chromosomes: list-like of chromosome names (e.g., ‘chr1’ or ‘1’). positions: list-like of genomic positions (ints). If index_base==1, positions are 1-based; if 0, 0-based. ref_genome: genome name (e.g., ‘hg19’), a path to a bgzipped FASTA, or an open pysam.FastaFile. index_base: 0 or 1 (default: 1). Specifies if input positions are 0-based or 1-based.\nReturns: pd.Series: The fetched 2-bp sequences (uppercased). None when unavailable.\nExamples: &gt;&gt;&gt; # Fetch CpG reads from sample data &gt;&gt;&gt; reads = cpg_reads(df[‘chromosome’], df[‘pos’], ‘hg19’, index_base=1) &gt;&gt;&gt; print(reads.head())*\n\nsource\n\n\n\n\n cpg_percent (reads)\n\n*Calculate the percentage of valid CpG sites in a dataset.\nReturns the percent of entries equal to ‘CG’ (case-insensitive) in reads. Accepts any iterable/Series; ignores NA/None values.\nArgs: reads: An iterable (list, Series, etc.) of 2-bp sequences.\nReturns: float: Percentage of entries that are ‘CG’ (0-100).\nExamples: &gt;&gt;&gt; reads = cpg_reads(df[‘chromosome’], df[‘pos’], ‘hg19’) &gt;&gt;&gt; percent_cg = cpg_percent(reads) &gt;&gt;&gt; print(f”CpG sites: {percent_cg:.1f}%“)*\n\nsource\n\n\n\n\n guess_ref_and_index_base (chromosomes, positions,\n                           ref_genomes:Sequence[Union[str,ForwardRef('Path\n                           ')]], index_bases:Sequence[int]=(0, 1))\n\n*Automatically identify the most likely reference genome and index base.\nThis function tries combinations of reference genomes and index bases, calculating the percentage of valid CpG sites for each combination. It returns the combination with the highest CpG percentage as the best guess.\nArgs: chromosomes: Chromosome identifiers (e.g., [‘chr1’, ‘chr2’]). positions: Genomic positions corresponding to chromosomes. ref_genomes: List of genome names or paths to test (e.g., [‘hg19’, ‘hg38’]). index_bases: List of index bases to test (default: [0, 1]).\nReturns: dict: Contains: - best_genome: Most likely genome name/path - best_index_base: Most likely index base (0 or 1) - best_percent: Percentage of CpG sites with best parameters - results: List of dicts with all tried combinations\nExamples: &gt;&gt;&gt; result = guess_ref_and_index_base( … df[‘chromosome’], … df[‘pos’], … ref_genomes=[‘hg19’, ‘hg38’] … ) &gt;&gt;&gt; print(f”Best genome: {result[‘best_genome’]} ({result[‘best_percent’]:.1f}% CpG)“)*\n\n## Genomic Liftover\n\nConverting coordinates between genome builds (e.g., hg19 → hg38) is essential when working with data from different sources or genome versions.\n\n✅ File '/mnt/idms/home/magyary/.bs-cpg/hg19ToHg38.over.chain.gz' already exists. Skipping.\n\n\nPath('/mnt/idms/home/magyary/.bs-cpg/hg19ToHg38.over.chain.gz')\n\n\n\nsource\n\n\n\n\n liftover_positions (chromosomes:Sequence, positions:Sequence,\n                     genome_from:Optional[str]=None,\n                     genome_to:Optional[str]=None, index_base_from:int=1,\n                     index_base_to:int=1, return_df:bool=False)\n\n*Convert genomic coordinates between different genome builds or adjust index bases.\nThis function performs liftover operations when both genome_from and genome_to are specified, or simple base conversion when both are None. It handles edge cases like unmapped regions, invalid coordinates, and chromosome naming variations (e.g., ‘chr1’ vs ‘1’).\nArgs: chromosomes: Sequence of chromosome identifiers (e.g., [‘chr1’, ‘chr2’]). positions: Sequence of genomic positions. Must be same length as chromosomes. genome_from: Source genome build (e.g., ‘hg19’). Required for liftover. genome_to: Target genome build (e.g., ‘hg38’). Required for liftover. index_base_from: Input indexing system (0 or 1, default: 1 for 1-based). index_base_to: Output indexing system (0 or 1, default: 1 for 1-based). return_df: If True, return results as a pandas DataFrame; else return tuple of lists.\nReturns: Tuple[List, List] or pd.DataFrame: If return_df=False: (new_chromosomes, new_positions) where unmapped positions are None. If return_df=True: DataFrame with detailed input/output columns.\nRaises: ValueError: If chromosomes and positions have different lengths, or invalid bases. ImportError: If pandas is required (return_df=True) but not installed.\nExamples: &gt;&gt;&gt; # Liftover from hg19 to hg38 (1-based to 1-based) &gt;&gt;&gt; new_chroms, new_pos = liftover_positions( … chromosomes=[‘chr1’, ‘chr1’], … positions=[100001, 200000], … genome_from=‘hg19’, … genome_to=‘hg38’, … index_base_from=1, … index_base_to=1 … ) &gt;&gt;&gt; print(list(zip(new_chroms, new_pos))) &gt;&gt;&gt; &gt;&gt;&gt; # Base conversion only (no liftover) &gt;&gt;&gt; new_chroms, new_pos = liftover_positions( … chromosomes=[‘chr1’], … positions=[100], … index_base_from=0, … index_base_to=1 … )*\n\n# quick invariance checks (smoke tests)\n# These won't fail the notebook export but help catch accidental regressions when running interactively.\ntry:\n    # 0-&gt;0 should match 1-&gt;1 adjusted by conversion on both ends.\n    ch0, p0 = liftover_positions([\"chr1\"], [100000], \"hg19\", \"hg38\", index_base_from=0, index_base_to=0)\n    ch1, p1 = liftover_positions([\"chr1\"], [100001], \"hg19\", \"hg38\", index_base_from=1, index_base_to=1)\n    if ch0[0] is not None and ch1[0] is not None:\n        assert ch0[0] == ch1[0]\n        assert p0[0] == p1[0]\nexcept Exception:\n    # Non-fatal in notebook context\n    pass",
     "crumbs": [
-      "bs-cpg"
-    ]
-  },
-  {
-    "objectID": "index.html#developer-guide",
-    "href": "index.html#developer-guide",
-    "title": "bs-cpg",
-    "section": "Developer Guide",
-    "text": "Developer Guide\nIf you are new to using nbdev here are some useful pointers to get you started.\n\nInstall bs_cpg in Development mode\n# make sure bs_cpg package is installed in development mode\n$ pip install -e .\n\n# make changes under nbs/ directory\n# ...\n\n# compile to have changes apply to bs_cpg\n$ nbdev_prepare",
-    "crumbs": [
-      "bs-cpg"
-    ]
-  },
-  {
-    "objectID": "index.html#usage",
-    "href": "index.html#usage",
-    "title": "bs-cpg",
-    "section": "Usage",
-    "text": "Usage\n\nInstallation\nInstall latest from the GitHub repository:\n$ pip install git+https://github.com/magistak/bs-cpg.git\nor from conda\n$ conda install -c magistak bs_cpg\nor from pypi\n$ pip install bs_cpg\n\n\nDocumentation\nDocumentation can be found hosted on this GitHub repository’s pages. Additionally you can find package manager specific guidelines on conda and pypi respectively.",
-    "crumbs": [
-      "bs-cpg"
-    ]
-  },
-  {
-    "objectID": "index.html#how-to-use",
-    "href": "index.html#how-to-use",
-    "title": "bs-cpg",
-    "section": "How to use",
-    "text": "How to use\nFill me in please! Don’t forget code examples:\n\n1+1\n\n2",
-    "crumbs": [
-      "bs-cpg"
-    ]
-  },
-  {
-    "objectID": "download_processed_geo.html",
-    "href": "download_processed_geo.html",
-    "title": "download_processed",
-    "section": "",
-    "text": "Import\n\n\nGeofetcher\n\ndef Geofetcher(\n    name:str='', metadata_root:str='', metadata_folder:str='', just_metadata:bool=False, refresh_metadata:bool=False,\n    config_template:str=None, pipeline_samples:str=None, pipeline_project:str=None, skip:int=0, acc_anno:bool=False,\n    use_key_subset:bool=False, processed:bool=False, data_source:str='samples', filter:str=None,\n    filter_size:str=None, geo_folder:str='.', split_experiments:bool=False, bam_folder:str='', fq_folder:str='',\n    sra_folder:str='', bam_conversion:bool=False, picard_path:str='', input:str=None, const_limit_project:int=50,\n    const_limit_discard:int=1000, attr_limit_truncate:int=500, max_soft_size:str='1GB', discard_soft:bool=False,\n    add_dotfile:bool=False, disable_progressbar:bool=False, add_convert_modifier:bool=False, opts:NoneType=None,\n    max_prefetch_size:NoneType=None, kwargs:VAR_KEYWORD\n):\n\nClass to download or get projects, metadata, data from GEO and SRA\n\ngeo=Geofetcher(just_metadata=True)\nacc = 'GSE51239'\n\n[INFO] [18:08:41] Metadata folder: /mnt/idms/home/magyary/bs-dna-methyl/nbs/project_name\n\n\nList files\n\nprojects = geo.get_projects(acc)\nprojects\n\n\n[INFO] [18:08:41] Metadata folder: /mnt/idms/home/magyary/bs-dna-methyl/nbs/project_name\n\n[INFO] [18:08:41] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:08:41] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:08:41] Skipped 0 accessions. Starting now.\n\n[INFO] [18:08:41] Processing accession 1 of 1: 'GSE51239'\n\n[INFO] [18:08:43] Processed 48 samples.\n\n[INFO] [18:08:43] Expanding metadata list...\n\n[INFO] [18:08:43] Found SRA Project accession: SRP030612\n\n[INFO] [18:08:43] Downloading SRP030612 sra metadata\n\n[INFO] [18:08:46] Parsing SRA file to download SRR records\n\n[INFO] [18:08:46] Dry run, no data will be downloaded\n\n[INFO] [18:08:46] Finished processing 1 accession(s)\n\n[INFO] [18:08:46] Cleaning soft files ...\n\n[INFO] [18:08:46] Creating complete project annotation sheets and config file...\n\n\n\n\n{'GSE51239_raw': Project\n 48 samples (showing first 20): hsperm-524-90, hsperm-530-90, hsperm-533-90, hsperm-534-90, h8c-1, h8c-2, hblast-1, hblast-2, hblast-3, hblastsingle-2, hblastsingle-5, hicm-1, hicm-2, hte-1, hte-2, hesp0-e1, hesp0-e4, hesp0-e5, hesp1-e1, hesp1-e4\n Sections: name, pep_version, sample_table, experiment_metadata, sample_modifiers, description}\n\n\nDownload files\n\nprojects_files=geof.get_projects(acc, just_metadata=False, ignore_cache=True)\n\n\n[INFO] [18:09:55] Metadata folder: /mnt/idms/home/magyary/bs-dna-methyl/nbs/project_name\n\n[INFO] [18:09:55] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:09:55] Trying GSE51239 (not a file) as accession...\n\n[INFO] [18:09:55] Skipped 0 accessions. Starting now.\n\n[INFO] [18:09:55] Processing accession 1 of 1: 'GSE51239'\n\n[INFO] [18:09:57] Processed 48 samples.\n\n[INFO] [18:09:57] Expanding metadata list...\n\n[INFO] [18:09:57] Found SRA Project accession: SRP030612\n\n[INFO] [18:09:57] Downloading SRP030612 sra metadata\n\n[INFO] [18:09:58] Parsing SRA file to download SRR records\n\n[INFO] [18:09:58] Getting SRR: SRR1003182  in (GSE51239)\n\n\n\n\n2025-07-28T16:09:58 prefetch.3.2.1: 1) Resolving 'SRR1003182'...\n2025-07-28T16:09:59 prefetch.3.2.1: Current preference is set to retrieve SRA Normalized Format files with full base quality scores\n\n\n[INFO] [18:10:00] Getting SRR: SRR1003183  in (GSE51239)\n\n\n2025-07-28T16:10:00 prefetch.3.2.1: 1) 'SRR1003182' is found locally \n2025-07-28T16:10:00 prefetch.3.2.1: 1) Resolving 'SRR1003183'...\n2025-07-28T16:10:01 prefetch.3.2.1: Current preference is set to retrieve SRA Normalized Format files with full base quality scores\n2025-07-28T16:10:02 prefetch.3.2.1: 1) Downloading 'SRR1003183'...\n2025-07-28T16:10:02 prefetch.3.2.1:  SRA Normalized Format file is being retrieved\n2025-07-28T16:10:02 prefetch.3.2.1:  Downloading via HTTPS...\n2025-07-28T16:10:02 prefetch.3.2.1:    Continue download of 'SRR1003183' from 154660408\n\n\nExplore files",
-    "crumbs": [
-      "download_processed"
+      "liftover_pos"
     ]
   },
   {
@@ -74,9 +44,269 @@
     "href": "setup.html",
     "title": "setup",
     "section": "",
-    "text": "Set data directory\n\n\nget_base_data_path\n\ndef get_base_data_path(\n    \n):\n\nDetermines the base data path with a clear priority: 1. BS_CPG_DATA environment variable. 2. Path stored in ~/.bs-cpg-config.json. 3. Prompts the user for the path as a last resort.\n\n\n\nread_sample_cpg\n\ndef read_sample_cpg(\n    columns:list=None, force_download:bool=False\n):\n\nDownloads and reads a sample CpG Parquet file.\nThis function fetches a sample dataset from the project’s GitHub repository. It caches the file locally to avoid re-downloading on subsequent calls.\nArgs: columns (list, optional): A list of columns to read from the file. Defaults to None (all columns). force_download (bool, optional): If True, forces a re-download of the file even if it exists locally. Defaults to False.\nReturns: pd.DataFrame: A DataFrame containing the sample CpG data.",
+    "text": "The package uses a centralized configuration system to manage where data is stored locally. This is essential for consistency across different workflows and environments.\n\n\nThe get_base_data_path() function determines the data storage location using a three-tier priority system:\n\nEnvironment Variable (BS_CPG_DATA): Highest priority, ideal for CI/CD pipelines and automated workflows.\nConfig File (~/.bs-cpg-config.json): For returning users, stores the preferred path.\nInteractive Prompt: Last resort, asks the user to specify a path and saves it for future use.\n\nThis ensures flexibility across different deployment scenarios.\n\nsource\n\n\n\n\n get_base_data_path ()\n\nDetermines the base data path with a clear priority: 1. BS_CPG_DATA environment variable. 2. Path stored in ~/.bs-cpg-config.json. 3. Prompts the user for the path as a last resort.\n\nsource\n\n\n\n\n read_sample_cpg (columns:list=None, force_download:bool=False)\n\n*Downloads and reads a sample CpG Parquet file.\nThis function fetches a sample dataset from the project’s GitHub repository. It caches the file locally to avoid re-downloading on subsequent calls.\nArgs: columns (list, optional): A list of columns to read from the file. Defaults to None (all columns). force_download (bool, optional): If True, forces a re-download of the file even if it exists locally. Defaults to False.\nReturns: pd.DataFrame: A DataFrame containing the sample CpG data.\nExamples: &gt;&gt;&gt; # Load the entire sample dataset &gt;&gt;&gt; df = read_sample_cpg() &gt;&gt;&gt; &gt;&gt;&gt; # Load only specific columns &gt;&gt;&gt; df_subset = read_sample_cpg(columns=[“chromosome”, “pos”]) &gt;&gt;&gt; &gt;&gt;&gt; # Force re-download if needed &gt;&gt;&gt; df_fresh = read_sample_cpg(force_download=True)*\n\n# Example: Get the base data path\nbase_path = get_base_data_path()\nprint(f\"Data will be stored in: {base_path}\")\n\nPath('/mnt/idms/home/magyary/.bs-cpg')",
     "crumbs": [
       "setup"
+    ]
+  },
+  {
+    "objectID": "setup.html#data-path-management",
+    "href": "setup.html#data-path-management",
+    "title": "setup",
+    "section": "",
+    "text": "The package uses a centralized configuration system to manage where data is stored locally. This is essential for consistency across different workflows and environments.\n\n\nThe get_base_data_path() function determines the data storage location using a three-tier priority system:\n\nEnvironment Variable (BS_CPG_DATA): Highest priority, ideal for CI/CD pipelines and automated workflows.\nConfig File (~/.bs-cpg-config.json): For returning users, stores the preferred path.\nInteractive Prompt: Last resort, asks the user to specify a path and saves it for future use.\n\nThis ensures flexibility across different deployment scenarios.\n\nsource\n\n\n\n\n get_base_data_path ()\n\nDetermines the base data path with a clear priority: 1. BS_CPG_DATA environment variable. 2. Path stored in ~/.bs-cpg-config.json. 3. Prompts the user for the path as a last resort.\n\nsource\n\n\n\n\n read_sample_cpg (columns:list=None, force_download:bool=False)\n\n*Downloads and reads a sample CpG Parquet file.\nThis function fetches a sample dataset from the project’s GitHub repository. It caches the file locally to avoid re-downloading on subsequent calls.\nArgs: columns (list, optional): A list of columns to read from the file. Defaults to None (all columns). force_download (bool, optional): If True, forces a re-download of the file even if it exists locally. Defaults to False.\nReturns: pd.DataFrame: A DataFrame containing the sample CpG data.\nExamples: &gt;&gt;&gt; # Load the entire sample dataset &gt;&gt;&gt; df = read_sample_cpg() &gt;&gt;&gt; &gt;&gt;&gt; # Load only specific columns &gt;&gt;&gt; df_subset = read_sample_cpg(columns=[“chromosome”, “pos”]) &gt;&gt;&gt; &gt;&gt;&gt; # Force re-download if needed &gt;&gt;&gt; df_fresh = read_sample_cpg(force_download=True)*\n\n# Example: Get the base data path\nbase_path = get_base_data_path()\nprint(f\"Data will be stored in: {base_path}\")\n\nPath('/mnt/idms/home/magyary/.bs-cpg')",
+    "crumbs": [
+      "setup"
+    ]
+  },
+  {
+    "objectID": "download_ref.html",
+    "href": "download_ref.html",
+    "title": "download_ref",
+    "section": "",
+    "text": "The module provides robust utilities for fetching and preparing bgzipped reference FASTA files from UCSC for use with pysam and other genomic tools.\n\nsource\n\n\n\n\n download_file (url:str, filename:str, sub_dir:pathlib.Path=None,\n                verbose:bool=True)\n\n*A general utility to download a file, with optional status messages and a progress bar.\nArgs: url (str): The URL of the file to download. filename (str): The name for the saved file. sub_dir (Path, optional): A subdirectory under the main data path. Defaults to None. verbose (bool, optional): If True, prints status messages and shows a progress bar. Defaults to True.\nReturns: Path: The full path to the downloaded file, or None on error.*\n\nsource\n\n\n\n\n is_bgzipped (filepath:pathlib.Path)\n\n*Checks if a file is block-gzipped (BGZF) by reading its header.\nArgs: filepath (Path): The path to the file to check.\nReturns: bool: True if the file is in BGZF format, False otherwise.*\n\nsource\n\n\n\n\n convert_to_bgzip (input_path:pathlib.Path, output_path:pathlib.Path)\n\n*Converts a standard gzip file to a bgzip file using command-line tools. This function replicates the command: gunzip -c &lt;input&gt; | bgzip &gt; &lt;output&gt;.\nArgs: input_path (Path): The path to the input gzip file. output_path (Path): The path for the output bgzip file.\nReturns: bool: True if conversion was successful, False otherwise.*\n\nsource\n\n\n\n\n get_ref_genome (name:str, **kwargs)\n\nDownloads a reference genome and ensures it is properly compressed with bgzip for use with pysam.\n\n# Example: Download and prepare hg38 reference genome\n# ref_path = get_ref_genome(\"hg38\")\n# print(f\"Reference genome saved to: {ref_path}\")\n\n✅ Final file '/mnt/idms/home/magyary/.bs-cpg/hg38.fa.bgz' already exists.\n\n\n'/mnt/idms/home/magyary/.bs-cpg/hg38.fa.bgz'\n\n\n\n### Liftover Chain Files\n\nDownload UCSC liftover chain files for converting coordinates between genome builds:\n\n'Hg38'\n\n\n\nsource\n\n\n\n\n get_liftover_chain (genome_from:str, genome_to:str, **kwargs)\n\n*Download liftover chain file between genome versions from UCSC goldenPath liftOver.\nChain files enable coordinate conversion between different genome builds. For example, converting hg19 (GRCh37) coordinates to hg38 (GRCh38).\nArgs: genome_from (str): The original reference genome name (e.g., ‘hg19’, ‘hg38’, ‘mm10’). genome_to (str): The new reference genome name (e.g., ‘hg19’, ‘hg38’, ‘mm10’). **kwargs: Additional keyword arguments to be passed to download_file() (e.g., verbose=False)\nReturns: Path: The path to the downloaded file, or None if an error occurred.\nExamples: &gt;&gt;&gt; # Download chain file for hg19 to hg38 conversion &gt;&gt;&gt; chain_path = get_liftover_chain(“hg19”, “hg38”) &gt;&gt;&gt; print(f”Chain file saved to: {chain_path}“)*",
+    "crumbs": [
+      "download_ref"
+    ]
+  },
+  {
+    "objectID": "download_ref.html#reference-genome-management",
+    "href": "download_ref.html#reference-genome-management",
+    "title": "download_ref",
+    "section": "",
+    "text": "The module provides robust utilities for fetching and preparing bgzipped reference FASTA files from UCSC for use with pysam and other genomic tools.\n\nsource\n\n\n\n\n download_file (url:str, filename:str, sub_dir:pathlib.Path=None,\n                verbose:bool=True)\n\n*A general utility to download a file, with optional status messages and a progress bar.\nArgs: url (str): The URL of the file to download. filename (str): The name for the saved file. sub_dir (Path, optional): A subdirectory under the main data path. Defaults to None. verbose (bool, optional): If True, prints status messages and shows a progress bar. Defaults to True.\nReturns: Path: The full path to the downloaded file, or None on error.*\n\nsource\n\n\n\n\n is_bgzipped (filepath:pathlib.Path)\n\n*Checks if a file is block-gzipped (BGZF) by reading its header.\nArgs: filepath (Path): The path to the file to check.\nReturns: bool: True if the file is in BGZF format, False otherwise.*\n\nsource\n\n\n\n\n convert_to_bgzip (input_path:pathlib.Path, output_path:pathlib.Path)\n\n*Converts a standard gzip file to a bgzip file using command-line tools. This function replicates the command: gunzip -c &lt;input&gt; | bgzip &gt; &lt;output&gt;.\nArgs: input_path (Path): The path to the input gzip file. output_path (Path): The path for the output bgzip file.\nReturns: bool: True if conversion was successful, False otherwise.*\n\nsource\n\n\n\n\n get_ref_genome (name:str, **kwargs)\n\nDownloads a reference genome and ensures it is properly compressed with bgzip for use with pysam.\n\n# Example: Download and prepare hg38 reference genome\n# ref_path = get_ref_genome(\"hg38\")\n# print(f\"Reference genome saved to: {ref_path}\")\n\n✅ Final file '/mnt/idms/home/magyary/.bs-cpg/hg38.fa.bgz' already exists.\n\n\n'/mnt/idms/home/magyary/.bs-cpg/hg38.fa.bgz'\n\n\n\n### Liftover Chain Files\n\nDownload UCSC liftover chain files for converting coordinates between genome builds:\n\n'Hg38'\n\n\n\nsource\n\n\n\n\n get_liftover_chain (genome_from:str, genome_to:str, **kwargs)\n\n*Download liftover chain file between genome versions from UCSC goldenPath liftOver.\nChain files enable coordinate conversion between different genome builds. For example, converting hg19 (GRCh37) coordinates to hg38 (GRCh38).\nArgs: genome_from (str): The original reference genome name (e.g., ‘hg19’, ‘hg38’, ‘mm10’). genome_to (str): The new reference genome name (e.g., ‘hg19’, ‘hg38’, ‘mm10’). **kwargs: Additional keyword arguments to be passed to download_file() (e.g., verbose=False)\nReturns: Path: The path to the downloaded file, or None if an error occurred.\nExamples: &gt;&gt;&gt; # Download chain file for hg19 to hg38 conversion &gt;&gt;&gt; chain_path = get_liftover_chain(“hg19”, “hg38”) &gt;&gt;&gt; print(f”Chain file saved to: {chain_path}“)*",
+    "crumbs": [
+      "download_ref"
+    ]
+  },
+  {
+    "objectID": "examples.html",
+    "href": "examples.html",
+    "title": "Examples and Tutorials",
+    "section": "",
+    "text": "This example shows how to load and explore sample CpG data included with bs-cpg.\n\nfrom bs_cpg.setup import read_sample_cpg, get_base_data_path\nimport pandas as pd\n\n# Load sample data\ndf = read_sample_cpg()\nprint(f\"Sample data shape: {df.shape}\")\nprint(f\"\\nColumns: {df.columns.tolist()}\")\nprint(f\"\\nFirst few rows:\")\nprint(df.head())\n\n\n# Check data path configuration\nbase_path = get_base_data_path()\nprint(f\"\\nData directory: {base_path}\")\n\n# Get basic statistics\nprint(f\"\\nChromosomes in sample: {df['chromosome'].unique()[:10]}\")\nprint(f\"Position range: {df['pos'].min()} - {df['pos'].max()}\")",
+    "crumbs": [
+      "Examples and Tutorials"
+    ]
+  },
+  {
+    "objectID": "examples.html#example-1-working-with-sample-data",
+    "href": "examples.html#example-1-working-with-sample-data",
+    "title": "Examples and Tutorials",
+    "section": "",
+    "text": "This example shows how to load and explore sample CpG data included with bs-cpg.\n\nfrom bs_cpg.setup import read_sample_cpg, get_base_data_path\nimport pandas as pd\n\n# Load sample data\ndf = read_sample_cpg()\nprint(f\"Sample data shape: {df.shape}\")\nprint(f\"\\nColumns: {df.columns.tolist()}\")\nprint(f\"\\nFirst few rows:\")\nprint(df.head())\n\n\n# Check data path configuration\nbase_path = get_base_data_path()\nprint(f\"\\nData directory: {base_path}\")\n\n# Get basic statistics\nprint(f\"\\nChromosomes in sample: {df['chromosome'].unique()[:10]}\")\nprint(f\"Position range: {df['pos'].min()} - {df['pos'].max()}\")",
+    "crumbs": [
+      "Examples and Tutorials"
+    ]
+  },
+  {
+    "objectID": "examples.html#example-2-validating-cpg-sites",
+    "href": "examples.html#example-2-validating-cpg-sites",
+    "title": "Examples and Tutorials",
+    "section": "Example 2: Validating CpG Sites",
+    "text": "Example 2: Validating CpG Sites\nLearn how to fetch reference sequences and validate that positions contain valid CpG dinucleotides.\n\nfrom bs_cpg.liftover_ps import cpg_reads, cpg_percent\n\n# Load sample data\ndf = read_sample_cpg([\"chromosome\", \"pos\"])\n\n# Fetch 2-bp sequences at each position\nprint(\"Fetching reference sequences...\")\nreads = cpg_reads(\n    chromosomes=df[\"chromosome\"],\n    positions=df[\"pos\"],\n    ref_genome=\"hg19\",\n    index_base=1\n)\n\nprint(f\"\\nFetched {len(reads)} sequences\")\nprint(f\"Sample sequences: {reads.head()}\")\n\n\n# Calculate percentage of valid CpG sites\npercent_cg = cpg_percent(reads)\nprint(f\"\\nPercentage of valid CpG sites: {percent_cg:.2f}%\")\n\n# Show distribution of sequences\nseq_counts = reads.value_counts()\nprint(f\"\\nMost common sequences:\")\nprint(seq_counts.head())",
+    "crumbs": [
+      "Examples and Tutorials"
+    ]
+  },
+  {
+    "objectID": "examples.html#example-3-genomic-liftover-hg19-to-hg38",
+    "href": "examples.html#example-3-genomic-liftover-hg19-to-hg38",
+    "title": "Examples and Tutorials",
+    "section": "Example 3: Genomic Liftover (hg19 to hg38)",
+    "text": "Example 3: Genomic Liftover (hg19 to hg38)\nConvert genomic coordinates from one reference genome build to another.\n\nfrom bs_cpg.liftover_ps import liftover_positions\n\n# Load sample data\ndf = read_sample_cpg([\"chromosome\", \"pos\"])\n\n# Select a subset for this example\nsubset_chroms = df[\"chromosome\"].head(5).values\nsubset_pos = df[\"pos\"].head(5).values\n\nprint(f\"Input positions (hg19):\")\nfor chrom, pos in zip(subset_chroms, subset_pos):\n    print(f\"  {chrom}:{pos}\")\n\n\n# Perform liftover\nprint(\"\\nPerforming liftover to hg38...\")\nnew_chroms, new_pos = liftover_positions(\n    chromosomes=subset_chroms,\n    positions=subset_pos,\n    genome_from=\"hg19\",\n    genome_to=\"hg38\",\n    index_base_from=1,\n    index_base_to=1\n)\n\n# Show results\nprint(\"\\nLifted positions (hg38):\")\nfor old_chr, old_pos, new_chr, new_p in zip(subset_chroms, subset_pos, new_chroms, new_pos):\n    status = \"✓ Mapped\" if new_chr is not None else \"✗ Unmapped\"\n    mapped_str = f\"{new_chr}:{new_p}\" if new_chr else \"N/A\"\n    print(f\"  {old_chr}:{old_pos} → {mapped_str} {status}\")",
+    "crumbs": [
+      "Examples and Tutorials"
+    ]
+  },
+  {
+    "objectID": "examples.html#example-4-detecting-genome-build-and-index-base",
+    "href": "examples.html#example-4-detecting-genome-build-and-index-base",
+    "title": "Examples and Tutorials",
+    "section": "Example 4: Detecting Genome Build and Index Base",
+    "text": "Example 4: Detecting Genome Build and Index Base\nWhen you have data from an unknown source, use automatic detection to find the correct genome and indexing system.\n\nfrom bs_cpg.liftover_ps import guess_ref_and_index_base\n\n# Load sample data\ndf = read_sample_cpg([\"chromosome\", \"pos\"])\n\n# Use only a small subset for speed\nsample_chroms = df[\"chromosome\"].head(100)\nsample_pos = df[\"pos\"].head(100)\n\nprint(\"Detecting reference genome and index base...\")\nprint(\"(Testing: hg19/hg38 × 0-based/1-based)\")\nprint()\n\nresult = guess_ref_and_index_base(\n    chromosomes=sample_chroms,\n    positions=sample_pos,\n    ref_genomes=[\"hg19\", \"hg38\"],\n    index_bases=[0, 1]\n)\n\n\n# Display results\nprint(f\"Best guess:\")\nprint(f\"  Genome: {result['best_genome']}\")\nprint(f\"  Index base: {result['best_index_base']}\")\nprint(f\"  CpG match: {result['best_percent']:.2f}%\")\n\nprint(f\"\\nAll results:\")\nresults_df = pd.DataFrame(result['results'])\nresults_df = results_df[['ref_genome', 'index_base', 'percent_cg']].sort_values('percent_cg', ascending=False)\nprint(results_df.to_string(index=False))",
+    "crumbs": [
+      "Examples and Tutorials"
+    ]
+  },
+  {
+    "objectID": "examples.html#example-5-downloading-reference-genomes",
+    "href": "examples.html#example-5-downloading-reference-genomes",
+    "title": "Examples and Tutorials",
+    "section": "Example 5: Downloading Reference Genomes",
+    "text": "Example 5: Downloading Reference Genomes\nDownload and prepare reference genomes and liftover chain files for offline use.\n\nfrom bs_cpg.download_ref import get_ref_genome, get_liftover_chain\nfrom pathlib import Path\n\n# Download hg38 reference genome\nprint(\"Downloading hg38 reference genome...\")\nref_path = get_ref_genome(\"hg38\")\nprint(f\"Reference saved to: {ref_path}\")\nprint(f\"File size: {Path(ref_path).stat().st_size / (1024**3):.2f} GB\")\n\n\n# Download liftover chain file\nprint(\"\\nDownloading hg19-&gt;hg38 chain file...\")\nchain_path = get_liftover_chain(\"hg19\", \"hg38\")\nprint(f\"Chain file saved to: {chain_path}\")\nprint(f\"File size: {Path(chain_path).stat().st_size / (1024**2):.2f} MB\")",
+    "crumbs": [
+      "Examples and Tutorials"
+    ]
+  },
+  {
+    "objectID": "examples.html#example-6-complete-pipeline---from-geo-to-liftover",
+    "href": "examples.html#example-6-complete-pipeline---from-geo-to-liftover",
+    "title": "Examples and Tutorials",
+    "section": "Example 6: Complete Pipeline - From GEO to Liftover",
+    "text": "Example 6: Complete Pipeline - From GEO to Liftover\nA full example showing how to combine multiple bs-cpg functions in a realistic workflow.\n\n# This is a complete example that combines multiple modules\n# For demonstration, we'll use the sample data\n\nfrom bs_cpg.setup import read_sample_cpg\nfrom bs_cpg.liftover_ps import cpg_reads, cpg_percent, liftover_positions\n\n# Step 1: Load data\nprint(\"Step 1: Loading CpG data...\")\ndf = read_sample_cpg([\"chromosome\", \"pos\"])\nprint(f\"  Loaded {len(df)} CpG sites\")\n\n# Step 2: Validate against hg19\nprint(\"\\nStep 2: Validating against hg19...\")\nreads = cpg_reads(df[\"chromosome\"], df[\"pos\"], \"hg19\", index_base=1)\nvalid_percent = cpg_percent(reads)\nprint(f\"  {valid_percent:.2f}% are valid CpG sites\")\n\n# Step 3: Liftover to hg38\nprint(\"\\nStep 3: Lifting over to hg38...\")\nnew_chroms, new_pos = liftover_positions(\n    chromosomes=df[\"chromosome\"],\n    positions=df[\"pos\"],\n    genome_from=\"hg19\",\n    genome_to=\"hg38\",\n    index_base_from=1\n)\nmapped_count = sum(1 for c in new_chroms if c is not None)\nprint(f\"  {mapped_count}/{len(df)} positions successfully lifted\")\n\n# Step 4: Create output dataframe\nprint(\"\\nStep 4: Creating output dataframe...\")\noutput_df = pd.DataFrame({\n    \"chrom_hg19\": df[\"chromosome\"],\n    \"pos_hg19\": df[\"pos\"],\n    \"chrom_hg38\": new_chroms,\n    \"pos_hg38\": new_pos,\n})\n\nprint(f\"\\nPipeline complete!\")\nprint(f\"Output dataframe columns: {output_df.columns.tolist()}\")",
+    "crumbs": [
+      "Examples and Tutorials"
+    ]
+  },
+  {
+    "objectID": "examples.html#tips-and-best-practices",
+    "href": "examples.html#tips-and-best-practices",
+    "title": "Examples and Tutorials",
+    "section": "Tips and Best Practices",
+    "text": "Tips and Best Practices\n\nPerformance Considerations\n\nCaching: Reference genomes and chain files are cached locally. Subsequent runs use cached files, making them much faster.\nBatch Processing: Process large datasets in chunks to manage memory usage.\nNetwork Resilience: The package automatically retries failed downloads with exponential backoff.\n\n\n\nCommon Issues\n\nMissing htslib: Ensure bgzip from htslib is installed and in your PATH for reference genome processing.\nLarge Files: Reference genomes can be &gt;1GB. Ensure adequate disk space in your configured data directory.\nCoordinate Systems: Always verify your input coordinates are in the expected base system (0-based or 1-based).\n\n\n\nWorking with Your Own Data\n# Instead of using read_sample_cpg(), load your own data\nimport pandas as pd\n\n# Load your data\ndf = pd.read_csv(\"my_cpg_data.csv\")\n\n# Use bs_cpg functions with your data\nreads = cpg_reads(df[\"chromosome\"], df[\"position\"], \"hg38\", index_base=1)",
+    "crumbs": [
+      "Examples and Tutorials"
+    ]
+  },
+  {
+    "objectID": "developers.html",
+    "href": "developers.html",
+    "title": "Developer Guide",
+    "section": "",
+    "text": "The bs-cpg package uses nbdev for development, which means the source code and documentation are authored directly in Jupyter notebooks and then compiled into Python modules.\n\n\n\nnbs/: Contains the Jupyter notebooks where all code and documentation are written\n\nindex.ipynb: Main documentation homepage\n00_download_processed_geo.ipynb: GEO data acquisition module\n01_setup.ipynb: Configuration and data path management\n02_download_ref.ipynb: Reference genome and chain file utilities\n03_liftover_pos.ipynb: Genomic coordinate processing and liftover\n04_developers.ipynb: This file\n\nbs_cpg/: Auto-generated Python package (exported from notebooks)\n_proc/: Processing notebooks (not part of the main package)\ndata/: Sample data files for testing\n\n\n\n\n\nnbdev.yml: nbdev configuration\nsettings.ini: Project metadata and package settings\npyproject.toml: Python project configuration\n_quarto.yml: Quarto/Jupyter Book configuration for documentation",
+    "crumbs": [
+      "Developer Guide"
+    ]
+  },
+  {
+    "objectID": "developers.html#project-structure",
+    "href": "developers.html#project-structure",
+    "title": "Developer Guide",
+    "section": "",
+    "text": "The bs-cpg package uses nbdev for development, which means the source code and documentation are authored directly in Jupyter notebooks and then compiled into Python modules.\n\n\n\nnbs/: Contains the Jupyter notebooks where all code and documentation are written\n\nindex.ipynb: Main documentation homepage\n00_download_processed_geo.ipynb: GEO data acquisition module\n01_setup.ipynb: Configuration and data path management\n02_download_ref.ipynb: Reference genome and chain file utilities\n03_liftover_pos.ipynb: Genomic coordinate processing and liftover\n04_developers.ipynb: This file\n\nbs_cpg/: Auto-generated Python package (exported from notebooks)\n_proc/: Processing notebooks (not part of the main package)\ndata/: Sample data files for testing\n\n\n\n\n\nnbdev.yml: nbdev configuration\nsettings.ini: Project metadata and package settings\npyproject.toml: Python project configuration\n_quarto.yml: Quarto/Jupyter Book configuration for documentation",
+    "crumbs": [
+      "Developer Guide"
+    ]
+  },
+  {
+    "objectID": "developers.html#setting-up-development-environment",
+    "href": "developers.html#setting-up-development-environment",
+    "title": "Developer Guide",
+    "section": "Setting Up Development Environment",
+    "text": "Setting Up Development Environment\n\n1. Clone the Repository\ngit clone https://github.com/magistak/bs-cpg.git\ncd bs-cpg\n\n\n2. Install in Development Mode\nInstall the package with editable mode so changes are reflected immediately:\npip install -e .\nThis installs the package in editable/development mode, meaning the code is linked rather than copied.\n\n\n3. Install Development Dependencies\npip install nbdev jupyter\n\n\n4. Verify Installation\npython -c \"import bs_cpg; print(bs_cpg.__version__)\"",
+    "crumbs": [
+      "Developer Guide"
+    ]
+  },
+  {
+    "objectID": "developers.html#working-with-nbdev",
+    "href": "developers.html#working-with-nbdev",
+    "title": "Developer Guide",
+    "section": "Working with nbdev",
+    "text": "Working with nbdev\n\nUnderstanding Cell Directives\nnbdev uses special cell directives (comments starting with #|) to control how cells are processed:\n\n\n\n\n\n\n\nDirective\nPurpose\n\n\n\n\n#\\| export\nExport this cell’s code to the package module\n\n\n#\\| hide\nHide this cell in documentation but execute it\n\n\n#\\| default_exp &lt;module_name&gt;\nSet the default module for subsequent #\\| export cells\n\n\n#\\| eval: false\nInclude in docs but don’t execute when running tests\n\n\n\n\n\nExample Cell Structure\n#| export\ndef my_function(x: int) -&gt; str:\n    \\\"\\\"\\\"A helpful docstring.\\\"\\\"\\\"  \n    return f\"Result: {x}\"\n\n\nWriting Tests in Notebooks\nYou can include tests directly after function definitions:\n# Example/test\nresult = my_function(42)\nassert result == \"Result: 42\"\nprint(f\"✅ Test passed: {result}\")",
+    "crumbs": [
+      "Developer Guide"
+    ]
+  },
+  {
+    "objectID": "developers.html#development-workflow",
+    "href": "developers.html#development-workflow",
+    "title": "Developer Guide",
+    "section": "Development Workflow",
+    "text": "Development Workflow\n\n1. Make Changes\nEdit the Jupyter notebooks in the nbs/ directory. Use #| export directive to mark cells that should be part of the package.\n\n\n2. Prepare and Export\nRun the following command to: - Export code from notebooks to Python modules (nbdev_export) - Run tests in the notebooks (nbdev_test) - Update the README from index.ipynb (nbdev_readme)\nnbdev_prepare\nThis is the primary command you’ll use during development.\n\n\n3. Preview Documentation Locally\nTo see how your documentation looks before publishing:\nnbdev_preview\nThis starts a local web server showing the rendered documentation.\n\n\n4. Run Specific Workflows\nIndividual nbdev commands (in case you don’t want to run everything):\n# Export code from notebooks\nnbdev_export\n\n# Run tests defined in notebooks\nnbdev_test\n\n# Update README from index.ipynb\nnbdev_readme",
+    "crumbs": [
+      "Developer Guide"
+    ]
+  },
+  {
+    "objectID": "developers.html#adding-new-functions",
+    "href": "developers.html#adding-new-functions",
+    "title": "Developer Guide",
+    "section": "Adding New Functions",
+    "text": "Adding New Functions\n\nStep-by-Step Example\nTo add a new function to the bs-cpg package:\n\nOpen the appropriate notebook (e.g., 03_liftover_pos.ipynb for coordinate functions)\nAdd a markdown cell explaining the function:\n### My New Function\n\nBrief description of what the function does.\nAdd a code cell with #| export:\n#| export\ndef my_new_function(data: list) -&gt; int:\n    \\\"\\\"\\\"Comprehensive docstring with Args, Returns, Examples.\\\"\\\"\\\" \n    # implementation\n    return result\nAdd test/example cells below:\n# Example usage\nresult = my_new_function([1, 2, 3])\nassert result == 6\nRun nbdev_prepare to export and test:\nnbdev_prepare\nVerify the function is accessible from the package:\nfrom bs_cpg.liftover_ps import my_new_function",
+    "crumbs": [
+      "Developer Guide"
+    ]
+  },
+  {
+    "objectID": "developers.html#managing-dependencies",
+    "href": "developers.html#managing-dependencies",
+    "title": "Developer Guide",
+    "section": "Managing Dependencies",
+    "text": "Managing Dependencies\n\nCore Dependencies\nbs-cpg depends on several key packages:\n\npandas: Data manipulation and analysis\npysam: Reading/writing genomic files\ngeofetch: Integration with GEO (Gene Expression Omnibus)\ntenacity: Automatic retry logic for network requests\nliftover: Genomic coordinate conversion\n\n\n\nUpdating Dependencies\nEdit settings.ini under the install_requires section:\ninstall_requires = \n    pandas\n    pysam\n    geofetch\n    tenacity\n    liftover\nThen run:\npip install -e .",
+    "crumbs": [
+      "Developer Guide"
+    ]
+  },
+  {
+    "objectID": "developers.html#troubleshooting",
+    "href": "developers.html#troubleshooting",
+    "title": "Developer Guide",
+    "section": "Troubleshooting",
+    "text": "Troubleshooting\n\nImport Errors After Editing\nIf you modify code and Python still sees old versions, you may need to reload the module:\n# In Jupyter\n%load_ext autoreload\n%autoreload 2\nOr reinstall in development mode:\npip install -e . --no-deps\n\n\nnbdev_prepare Fails\nCheck that all cells marked with #| export can run without errors:\nnbdev_test  # Run notebook tests\n\n\nModule Not Found\nMake sure you’ve run nbdev_export to generate the Python files:\nnbdev_export",
+    "crumbs": [
+      "Developer Guide"
+    ]
+  },
+  {
+    "objectID": "developers.html#publishing-updates",
+    "href": "developers.html#publishing-updates",
+    "title": "Developer Guide",
+    "section": "Publishing Updates",
+    "text": "Publishing Updates\n\nPrepare for Release\n\nUpdate version in settings.ini:\nversion = 0.1.2\nRun final checks:\nnbdev_prepare\nnbdev_preview\nCommit and push:\ngit add .\ngit commit -m \"v0.1.2: Add new features\"\ngit push\n\n\n\nDeploy Documentation\nTo deploy documentation to GitHub Pages:\nnbdev_ghp_deploy\n\n\nBuild and Release Package\nThe package is configured to automatically build and release via GitHub Actions. Manually building:\npython -m pip install build\npython -m build",
+    "crumbs": [
+      "Developer Guide"
+    ]
+  },
+  {
+    "objectID": "developers.html#resources",
+    "href": "developers.html#resources",
+    "title": "Developer Guide",
+    "section": "Resources",
+    "text": "Resources\n\nnbdev Documentation: Complete guide to nbdev\nJupyter Notebook Documentation: Notebook features\nPandas Documentation: Data analysis library\npysam Documentation: Genomic file handling\nUCSC Genome Browser: Reference for chain files and genomes",
+    "crumbs": [
+      "Developer Guide"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "bs-cpg",
+    "section": "",
+    "text": "This is the main documentation homepage for bs-cpg. For comprehensive module-specific documentation, API references, and examples, see the sections below. For development guidance, see the Developer Guide.",
+    "crumbs": [
+      "bs-cpg"
+    ]
+  },
+  {
+    "objectID": "index.html#module-documentation",
+    "href": "index.html#module-documentation",
+    "title": "bs-cpg",
+    "section": "Module Documentation",
+    "text": "Module Documentation\nDetailed documentation for each module is available in separate notebooks:\n\nSetup & Configuration: Data path management and sample data access\nData Acquisition: Downloading RRBS data from GEO\nReference Management: Reference genomes and liftover chain files\nCoordinate Processing: Genomic liftover and CpG validation\nExamples & Tutorials: Practical examples and workflows\nDeveloper Guide: Contributing to bs-cpg and development workflows",
+    "crumbs": [
+      "bs-cpg"
+    ]
+  },
+  {
+    "objectID": "index.html#quick-start",
+    "href": "index.html#quick-start",
+    "title": "bs-cpg",
+    "section": "Quick Start",
+    "text": "Quick Start\n\nBasic Workflow Example\nHere’s a simple workflow to get started with bs-cpg:\nfrom bs_cpg.setup import read_sample_cpg, get_base_data_path\nfrom bs_cpg.liftover_ps import cpg_reads, cpg_percent, liftover_positions\n\n# 1. Load sample CpG data\ndf = read_sample_cpg([\"chromosome\", \"pos\"])\n\n# 2. Validate CpG sites\nreads = cpg_reads(df[\"chromosome\"], df[\"pos\"], \"hg19\", index_base=1)\npercent_valid = cpg_percent(reads)\nprint(f\"Valid CpG sites: {percent_valid:.1f}%\")\n\n# 3. Perform liftover to hg38\nnew_chroms, new_pos = liftover_positions(\n    chromosomes=df[\"chromosome\"],\n    positions=df[\"pos\"],\n    genome_from=\"hg19\",\n    genome_to=\"hg38\",\n    index_base_from=1,\n    index_base_to=1\n)",
+    "crumbs": [
+      "bs-cpg"
+    ]
+  },
+  {
+    "objectID": "index.html#installation-setup",
+    "href": "index.html#installation-setup",
+    "title": "bs-cpg",
+    "section": "Installation & Setup",
+    "text": "Installation & Setup",
+    "crumbs": [
+      "bs-cpg"
+    ]
+  },
+  {
+    "objectID": "index.html#installation",
+    "href": "index.html#installation",
+    "title": "bs-cpg",
+    "section": "Installation",
+    "text": "Installation\nInstall latest from the GitHub repository:\n$ pip install git+https://github.com/magistak/bs-cpg.git\nor from conda\n$ conda install -c magistak bs_cpg\nor from pypi\n$ pip install bs_cpg\nNote: Ensure you have htslib (specifically bgzip) installed and in your PATH for reference genome processing.\n\nDocumentation\nDocumentation can be found hosted on this GitHub repository’s pages. Additionally you can find package manager specific guidelines on conda and pypi respectively.\n\nfrom bs_cpg.download_processed import Geofetcher\ngeo = Geofetcher(just_metadata=True)\nprojects = geo.get_projects('GSE51239')\n\n2\n\n\n\n\nLiftover & Validation (bs_cpg.liftover_ps)\nPerform genomic liftover while explicitly handling 0-based or 1-based indexing:\n\nfrom bs_cpg.liftover_ps import liftover_positions\nnew_chroms, new_pos = liftover_positions(\n    chromosomes=[\"chr1\"], \n    positions=[100001], \n    genome_from=\"hg19\", \n    genome_to=\"hg38\", \n    index_base_from=1\n)\n\nYou can also validate CpG site integrity using cpg_percent(reads).",
+    "crumbs": [
+      "bs-cpg"
     ]
   }
 ]

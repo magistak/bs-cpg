@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -10,6 +10,9 @@
 
 <title>bs-cpg</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -68,15 +71,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="./">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-baedc78cbf92349237790bf011c153e8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-de52dc3353fe04aa4d07820b7139bd46.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -178,6 +180,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">liftover_pos</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./developers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Developer Guide</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./examples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Examples and Tutorials</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -188,16 +202,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#developer-guide" id="toc-developer-guide" class="nav-link active" data-scroll-target="#developer-guide">Developer Guide</a>
+  <li><a href="#module-documentation" id="toc-module-documentation" class="nav-link active" data-scroll-target="#module-documentation">Module Documentation</a></li>
+  <li><a href="#quick-start" id="toc-quick-start" class="nav-link" data-scroll-target="#quick-start">Quick Start</a>
   <ul class="collapse">
-  <li><a href="#install-bs_cpg-in-development-mode" id="toc-install-bs_cpg-in-development-mode" class="nav-link" data-scroll-target="#install-bs_cpg-in-development-mode">Install bs_cpg in Development mode</a></li>
+  <li><a href="#basic-workflow-example" id="toc-basic-workflow-example" class="nav-link" data-scroll-target="#basic-workflow-example">Basic Workflow Example</a></li>
   </ul></li>
-  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a>
+  <li><a href="#installation-setup" id="toc-installation-setup" class="nav-link" data-scroll-target="#installation-setup">Installation &amp; Setup</a></li>
+  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a>
   <ul class="collapse">
-  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a></li>
   <li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation">Documentation</a></li>
+  <li><a href="#liftover-validation-bs_cpg.liftover_ps" id="toc-liftover-validation-bs_cpg.liftover_ps" class="nav-link" data-scroll-target="#liftover-validation-bs_cpg.liftover_ps">Liftover &amp; Validation (<code>bs_cpg.liftover_ps</code>)</a></li>
   </ul></li>
-  <li><a href="#how-to-use" id="toc-how-to-use" class="nav-link" data-scroll-target="#how-to-use">How to use</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/magistak/bs-cpg/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="index.html.md"><i class="bi bi-file-code"></i>CommonMark</a></li></ul></div></nav>
     </div>
@@ -229,49 +244,87 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
-<p>This file will become your README and also the index of your documentation.</p>
-<section id="developer-guide" class="level2">
-<h2 class="anchored" data-anchor-id="developer-guide">Developer Guide</h2>
-<p>If you are new to using <code>nbdev</code> here are some useful pointers to get you started.</p>
-<section id="install-bs_cpg-in-development-mode" class="level3">
-<h3 class="anchored" data-anchor-id="install-bs_cpg-in-development-mode">Install bs_cpg in Development mode</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make sure bs_cpg package is installed in development mode</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install <span class="at">-e</span> .</span>
+<p>This is the main documentation homepage for bs-cpg. For comprehensive module-specific documentation, API references, and examples, see the sections below. For development guidance, see the <a href="./developers.html">Developer Guide</a>.</p>
+<section id="module-documentation" class="level2">
+<h2 class="anchored" data-anchor-id="module-documentation">Module Documentation</h2>
+<p>Detailed documentation for each module is available in separate notebooks:</p>
+<ul>
+<li><strong><a href="./setup.html">Setup &amp; Configuration</a></strong>: Data path management and sample data access</li>
+<li><strong><a href="./download_processed_geo.html">Data Acquisition</a></strong>: Downloading RRBS data from GEO</li>
+<li><strong><a href="./download_ref.html">Reference Management</a></strong>: Reference genomes and liftover chain files</li>
+<li><strong><a href="./liftover_pos.html">Coordinate Processing</a></strong>: Genomic liftover and CpG validation</li>
+<li><strong><a href="./examples.html">Examples &amp; Tutorials</a></strong>: Practical examples and workflows</li>
+<li><strong><a href="./developers.html">Developer Guide</a></strong>: Contributing to bs-cpg and development workflows</li>
+</ul>
+</section>
+<section id="quick-start" class="level2">
+<h2 class="anchored" data-anchor-id="quick-start">Quick Start</h2>
+<section id="basic-workflow-example" class="level3">
+<h3 class="anchored" data-anchor-id="basic-workflow-example">Basic Workflow Example</h3>
+<p>Here’s a simple workflow to get started with bs-cpg:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs_cpg.setup <span class="im">import</span> read_sample_cpg, get_base_data_path</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs_cpg.liftover_ps <span class="im">import</span> cpg_reads, cpg_percent, liftover_positions</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># make changes under nbs/ directory</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Load sample CpG data</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> read_sample_cpg([<span class="st">"chromosome"</span>, <span class="st">"pos"</span>])</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># compile to have changes apply to bs_cpg</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> nbdev_prepare</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Validate CpG sites</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>reads <span class="op">=</span> cpg_reads(df[<span class="st">"chromosome"</span>], df[<span class="st">"pos"</span>], <span class="st">"hg19"</span>, index_base<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>percent_valid <span class="op">=</span> cpg_percent(reads)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Valid CpG sites: </span><span class="sc">{</span>percent_valid<span class="sc">:.1f}</span><span class="ss">%"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Perform liftover to hg38</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>new_chroms, new_pos <span class="op">=</span> liftover_positions(</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    chromosomes<span class="op">=</span>df[<span class="st">"chromosome"</span>],</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    positions<span class="op">=</span>df[<span class="st">"pos"</span>],</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    genome_from<span class="op">=</span><span class="st">"hg19"</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    genome_to<span class="op">=</span><span class="st">"hg38"</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    index_base_from<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    index_base_to<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
-<section id="usage" class="level2">
-<h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<section id="installation" class="level3">
-<h3 class="anchored" data-anchor-id="installation">Installation</h3>
+<section id="installation-setup" class="level2">
+<h2 class="anchored" data-anchor-id="installation-setup">Installation &amp; Setup</h2>
+</section>
+<section id="installation" class="level2">
+<h2 class="anchored" data-anchor-id="installation">Installation</h2>
 <p>Install latest from the GitHub <a href="https://github.com/magistak/bs-cpg">repository</a>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install git+https://github.com/magistak/bs-cpg.git</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>or from <a href="https://anaconda.org/magistak/bs-cpg">conda</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> conda install <span class="at">-c</span> magistak bs_cpg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>or from <a href="https://pypi.org/project/bs-cpg/">pypi</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install bs_cpg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
+<p><em>Note: Ensure you have <code>htslib</code> (specifically <code>bgzip</code>) installed and in your PATH for reference genome processing.</em></p>
 <section id="documentation" class="level3">
 <h3 class="anchored" data-anchor-id="documentation">Documentation</h3>
 <p>Documentation can be found hosted on this GitHub <a href="https://github.com/magistak/bs-cpg">repository</a>’s <a href="https://magistak.github.io/bs-cpg/">pages</a>. Additionally you can find package manager specific guidelines on <a href="https://anaconda.org/magistak/bs-cpg">conda</a> and <a href="https://pypi.org/project/bs-cpg/">pypi</a> respectively.</p>
-</section>
-</section>
-<section id="how-to-use" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-use">How to use</h2>
-<p>Fill me in please! Don’t forget code examples:</p>
-<div id="0935af25" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="op">+</span><span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-13" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs_cpg.download_processed <span class="im">import</span> Geofetcher</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>geo <span class="op">=</span> Geofetcher(just_metadata<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>projects <span class="op">=</span> geo.get_projects(<span class="st">'GSE51239'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <pre><code>2</code></pre>
 </div>
 </div>
+</section>
+<section id="liftover-validation-bs_cpg.liftover_ps" class="level3">
+<h3 class="anchored" data-anchor-id="liftover-validation-bs_cpg.liftover_ps">Liftover &amp; Validation (<code>bs_cpg.liftover_ps</code>)</h3>
+<p>Perform genomic liftover while explicitly handling 0-based or 1-based indexing:</p>
+<div id="cell-15" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs_cpg.liftover_ps <span class="im">import</span> liftover_positions</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>new_chroms, new_pos <span class="op">=</span> liftover_positions(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    chromosomes<span class="op">=</span>[<span class="st">"chr1"</span>], </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    positions<span class="op">=</span>[<span class="dv">100001</span>], </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    genome_from<span class="op">=</span><span class="st">"hg19"</span>, </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    genome_to<span class="op">=</span><span class="st">"hg38"</span>, </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    index_base_from<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>You can also validate CpG site integrity using <code>cpg_percent(reads)</code>.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

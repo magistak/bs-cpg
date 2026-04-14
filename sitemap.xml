@@ -1,23 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://magistak.github.io/bs-cpg/download_ref.html</loc>
-    <lastmod>2026-03-10T13:52:05.265Z</lastmod>
+    <loc>https://magistak.github.io/bs-cpg/download_processed_geo.html</loc>
+    <lastmod>2026-04-14T11:48:14.232Z</lastmod>
   </url>
   <url>
     <loc>https://magistak.github.io/bs-cpg/liftover_pos.html</loc>
-    <lastmod>2026-03-10T13:52:05.343Z</lastmod>
-  </url>
-  <url>
-    <loc>https://magistak.github.io/bs-cpg/index.html</loc>
-    <lastmod>2026-03-10T13:52:03.680Z</lastmod>
-  </url>
-  <url>
-    <loc>https://magistak.github.io/bs-cpg/download_processed_geo.html</loc>
-    <lastmod>2026-03-10T13:52:03.651Z</lastmod>
+    <lastmod>2026-04-14T11:48:14.643Z</lastmod>
   </url>
   <url>
     <loc>https://magistak.github.io/bs-cpg/setup.html</loc>
-    <lastmod>2026-03-10T13:52:03.954Z</lastmod>
+    <lastmod>2026-04-14T11:48:14.710Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magistak.github.io/bs-cpg/download_ref.html</loc>
+    <lastmod>2026-04-14T11:48:14.665Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magistak.github.io/bs-cpg/examples.html</loc>
+    <lastmod>2026-04-14T11:48:13.292Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magistak.github.io/bs-cpg/developers.html</loc>
+    <lastmod>2026-04-14T11:48:13.292Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magistak.github.io/bs-cpg/index.html</loc>
+    <lastmod>2026-04-14T11:48:13.333Z</lastmod>
   </url>
 </urlset>
