@@ -16,42 +16,4 @@ jobs:
     env:
       BS_CPG_DATA: /tmp/bs-cpg-data
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y pandoc
-
-      - name: Install Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-
-      - name: Install Python dependencies
-        run: |
-          pip install -U pip
-          pip install nbdev execnb
-          pip install -e .
-
-      - name: Install remaining dependencies
-        run: |
-          pip install fastcore pandas geofetch tenacity joblib tqdm requests fastparquet liftover pysam pyarrow
-
-      - name: Build documentation
-        env:
-          BS_CPG_DATA: /tmp/bs-cpg-data
-        run: |
-          export PATH="/home/runner/.local/bin:$(dirname $(which python)):$PATH"
-          nbdev_docs
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        if: github.ref == 'refs/heads/main'
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_docs
+      - uses: fastai/workflows/quarto-ghp@master
