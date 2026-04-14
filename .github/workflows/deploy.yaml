@@ -27,13 +27,16 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y quarto
+          sudo apt-get install -y pandoc
+
+      - name: Install Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
 
       - name: Install Python dependencies
         run: |
           pip install -U pip
           pip install -e ".[dev]"
-          pip install execnb quarto
+          pip install execnb
 
       - name: Build documentation
         env:
