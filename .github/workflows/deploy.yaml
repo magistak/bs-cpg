@@ -3,17 +3,46 @@ name: Deploy to GitHub Pages
 permissions:
   contents: write
   pages: write
+  id-token: write
 
 on:
   push:
     branches: [ "main", "master" ]
   workflow_dispatch:
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
       BS_CPG_DATA: /tmp/bs-cpg-data
     steps:
-      - uses: fastai/workflows/quarto-ghp@master
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          nb_deps: "execnb"
+          python-version: '3.12'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y quarto
+
+      - name: Install Python dependencies
+        run: |
+          pip install -U pip
+          pip install -e ".[dev]"
+          pip install execnb quarto
+
+      - name: Build documentation
+        env:
+          BS_CPG_DATA: /tmp/bs-cpg-data
+        run: nbdev_docs
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_docs
