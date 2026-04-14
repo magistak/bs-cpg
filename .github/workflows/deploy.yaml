@@ -45,7 +45,9 @@ jobs:
       - name: Build documentation
         env:
           BS_CPG_DATA: /tmp/bs-cpg-data
-        run: nbdev_docs
+        run: |
+          export PATH="/home/runner/.local/bin:$(dirname $(which python)):$PATH"
+          nbdev_docs
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
