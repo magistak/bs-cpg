@@ -35,8 +35,12 @@ jobs:
       - name: Install Python dependencies
         run: |
           pip install -U pip
-          pip install -e ".[dev]"
-          pip install execnb
+          pip install nbdev execnb
+          pip install -e .
+
+      - name: Install remaining dependencies
+        run: |
+          pip install fastcore pandas geofetch tenacity joblib tqdm requests fastparquet liftover pysam pyarrow
 
       - name: Build documentation
         env:
