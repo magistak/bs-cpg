@@ -212,6 +212,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#cpg_reads" id="toc-cpg_reads" class="nav-link" data-scroll-target="#cpg_reads">cpg_reads</a></li>
   <li><a href="#cpg_percent" id="toc-cpg_percent" class="nav-link" data-scroll-target="#cpg_percent">cpg_percent</a></li>
   <li><a href="#guess_ref_and_index_base" id="toc-guess_ref_and_index_base" class="nav-link" data-scroll-target="#guess_ref_and_index_base">guess_ref_and_index_base</a></li>
+  </ul></li>
+  <li><a href="#genomic-liftover" id="toc-genomic-liftover" class="nav-link" data-scroll-target="#genomic-liftover">Genomic Liftover</a>
+  <ul class="collapse">
   <li><a href="#liftover_positions" id="toc-liftover_positions" class="nav-link" data-scroll-target="#liftover_positions">liftover_positions</a></li>
   </ul></li>
   </ul>
@@ -420,20 +423,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Args: chromosomes: Chromosome identifiers (e.g., [‘chr1’, ‘chr2’]). positions: Genomic positions corresponding to chromosomes. ref_genomes: List of genome names or paths to test (e.g., [‘hg19’, ‘hg38’]). index_bases: List of index bases to test (default: [0, 1]).</p>
 <p>Returns: dict: Contains: - best_genome: Most likely genome name/path - best_index_base: Most likely index base (0 or 1) - best_percent: Percentage of CpG sites with best parameters - results: List of dicts with all tried combinations</p>
 <p>Examples: &gt;&gt;&gt; result = guess_ref_and_index_base( … df[‘chromosome’], … df[‘pos’], … ref_genomes=[‘hg19’, ‘hg38’] … ) &gt;&gt;&gt; print(f”Best genome: {result[‘best_genome’]} ({result[‘best_percent’]:.1f}% CpG)“)*</p>
-<div id="5098e99d-fc7b-4ac1-b188-7c185caa2881" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Genomic Liftover</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>Converting coordinates between genome builds (e.g., hg19 → hg38) <span class="kw">is</span> essential when working <span class="cf">with</span> data <span class="im">from</span> different sources <span class="kw">or</span> genome versions.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>✅ File '/mnt/idms/home/magyary/.bs-cpg/hg19ToHg38.over.chain.gz' already exists. Skipping.</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<pre><code>Path('/mnt/idms/home/magyary/.bs-cpg/hg19ToHg38.over.chain.gz')</code></pre>
-</div>
-</div>
+</section>
+</section>
+<section id="genomic-liftover" class="level2">
+<h2 class="anchored" data-anchor-id="genomic-liftover">Genomic Liftover</h2>
+<p>Converting coordinates between genome builds (e.g., hg19 → hg38) is essential when working with data from different sources or genome versions.</p>
 <hr>
 <p><a href="https://github.com/magistak/bs-cpg/blob/main/bs_cpg/liftover_ps.py#L222" target="_blank" style="float:right; font-size:smaller">source</a></p>
-</section>
 <section id="liftover_positions" class="level3">
 <h3 class="anchored" data-anchor-id="liftover_positions">liftover_positions</h3>
 <blockquote class="blockquote">
@@ -449,18 +445,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Raises: ValueError: If chromosomes and positions have different lengths, or invalid bases. ImportError: If pandas is required (return_df=True) but not installed.</p>
 <p>Examples: &gt;&gt;&gt; # Liftover from hg19 to hg38 (1-based to 1-based) &gt;&gt;&gt; new_chroms, new_pos = liftover_positions( … chromosomes=[‘chr1’, ‘chr1’], … positions=[100001, 200000], … genome_from=‘hg19’, … genome_to=‘hg38’, … index_base_from=1, … index_base_to=1 … ) &gt;&gt;&gt; print(list(zip(new_chroms, new_pos))) &gt;&gt;&gt; &gt;&gt;&gt; # Base conversion only (no liftover) &gt;&gt;&gt; new_chroms, new_pos = liftover_positions( … chromosomes=[‘chr1’], … positions=[100], … index_base_from=0, … index_base_to=1 … )*</p>
 <div id="3dcf8704" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># quick invariance checks (smoke tests)</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># These won't fail the notebook export but help catch accidental regressions when running interactively.</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 0-&gt;0 should match 1-&gt;1 adjusted by conversion on both ends.</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    ch0, p0 <span class="op">=</span> liftover_positions([<span class="st">"chr1"</span>], [<span class="dv">100000</span>], <span class="st">"hg19"</span>, <span class="st">"hg38"</span>, index_base_from<span class="op">=</span><span class="dv">0</span>, index_base_to<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    ch1, p1 <span class="op">=</span> liftover_positions([<span class="st">"chr1"</span>], [<span class="dv">100001</span>], <span class="st">"hg19"</span>, <span class="st">"hg38"</span>, index_base_from<span class="op">=</span><span class="dv">1</span>, index_base_to<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ch0[<span class="dv">0</span>] <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> ch1[<span class="dv">0</span>] <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> ch0[<span class="dv">0</span>] <span class="op">==</span> ch1[<span class="dv">0</span>]</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> p0[<span class="dv">0</span>] <span class="op">==</span> p1[<span class="dv">0</span>]</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span>:</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Non-fatal in notebook context</span></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># quick invariance checks (smoke tests)</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># These won't fail the notebook export but help catch accidental regressions when running interactively.</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 0-&gt;0 should match 1-&gt;1 adjusted by conversion on both ends.</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    ch0, p0 <span class="op">=</span> liftover_positions([<span class="st">"chr1"</span>], [<span class="dv">100000</span>], <span class="st">"hg19"</span>, <span class="st">"hg38"</span>, index_base_from<span class="op">=</span><span class="dv">0</span>, index_base_to<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    ch1, p1 <span class="op">=</span> liftover_positions([<span class="st">"chr1"</span>], [<span class="dv">100001</span>], <span class="st">"hg19"</span>, <span class="st">"hg38"</span>, index_base_from<span class="op">=</span><span class="dv">1</span>, index_base_to<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ch0[<span class="dv">0</span>] <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> ch1[<span class="dv">0</span>] <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> ch0[<span class="dv">0</span>] <span class="op">==</span> ch1[<span class="dv">0</span>]</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> p0[<span class="dv">0</span>] <span class="op">==</span> p1[<span class="dv">0</span>]</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span>:</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Non-fatal in notebook context</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 

@@ -241,15 +241,11 @@ df\[‘chromosome’\], … df\[‘pos’\], … ref_genomes=\[‘hg19’, ‘hg
 \>\>\> print(f”Best genome: {result\[‘best_genome’\]}
 ({result\[‘best_percent’\]:.1f}% CpG)“)\*
 
-``` python
 ## Genomic Liftover
 
-Converting coordinates between genome builds (e.g., hg19 → hg38) is essential when working with data from different sources or genome versions.
-```
-
-    ✅ File '/mnt/idms/home/magyary/.bs-cpg/hg19ToHg38.over.chain.gz' already exists. Skipping.
-
-    Path('/mnt/idms/home/magyary/.bs-cpg/hg19ToHg38.over.chain.gz')
+Converting coordinates between genome builds (e.g., hg19 → hg38) is
+essential when working with data from different sources or genome
+versions.
 
 ------------------------------------------------------------------------
 

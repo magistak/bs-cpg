@@ -90,13 +90,10 @@ bgzip for use with pysam.*
 
     '/mnt/idms/home/magyary/.bs-cpg/hg38.fa.bgz'
 
-``` python
 ### Liftover Chain Files
 
-Download UCSC liftover chain files for converting coordinates between genome builds:
-```
-
-    'Hg38'
+Download UCSC liftover chain files for converting coordinates between
+genome builds:
 
 ------------------------------------------------------------------------
 
