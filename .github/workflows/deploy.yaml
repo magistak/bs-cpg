@@ -32,12 +32,13 @@ jobs:
       - name: Install dependencies and build docs
         run: |
           python -m pip install --upgrade pip
-          # Install setuptools first (needed for pkg_resources)
-          pip install setuptools
+          # Pin setuptools to keep pkg_resources available for nbdev
+          python -m pip install "setuptools<81"
           # Install the exact versions we use locally
-          pip install nbdev==2.3.34 execnb==0.1.11
+          python -m pip install nbdev==2.3.34 execnb==0.1.11
           # Install the local package and dev dependencies
-          pip install -e ".[dev]"
+          python -m pip install -e ".[dev]"
+          python -c "import pkg_resources; print(pkg_resources.__file__)"
           # Run the documentation builder
           python -m nbdev.quarto
 
