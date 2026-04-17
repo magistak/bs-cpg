@@ -9,7 +9,7 @@ The bs-cpg package documentation has been completely restructured following the 
 - **Purpose**: Landing page and quick-start guide for users
 - **Contents**:
   - Package overview and key capabilities
-  - Installation instructions (pip, conda, GitHub)
+  - Installation instructions (pip, GitHub)
   - Quick start example showing basic workflow
   - Navigation to module-specific documentation
   - Links to all specialized guides
@@ -153,7 +153,7 @@ nbdev_ghp_deploy
 2. Use `nbdev_preview` to view the rendered documentation
 3. Commit changes to version control
 4. Deploy documentation via `nbdev_ghp_deploy`
-5. Publish package to PyPI/conda-forge as needed
+5. Publish package updates to PyPI as needed
 
 ---
 

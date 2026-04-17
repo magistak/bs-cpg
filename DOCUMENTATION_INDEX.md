@@ -180,7 +180,6 @@ nbdev_ghp_deploy
 - **GitHub Issues**: [magistak/bs-cpg/issues](https://github.com/magistak/bs-cpg/issues)
 - **Documentation**: [magistak.github.io/bs-cpg](https://magistak.github.io/bs-cpg/)
 - **PyPI**: [pypi.org/project/bs-cpg](https://pypi.org/project/bs-cpg/)
-- **Conda**: [anaconda.org/magistak/bs-cpg](https://anaconda.org/magistak/bs-cpg)
 
 ---
 
