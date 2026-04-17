@@ -291,18 +291,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="installation">Installation</h2>
 <p>Install latest from the GitHub <a href="https://github.com/magistak/bs-cpg">repository</a>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install git+https://github.com/magistak/bs-cpg.git</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>or from <a href="https://anaconda.org/magistak/bs-cpg">conda</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> conda install <span class="at">-c</span> magistak bs_cpg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>or from <a href="https://pypi.org/project/bs-cpg/">pypi</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install bs_cpg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install bs_cpg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><em>Note: Ensure you have <code>htslib</code> (specifically <code>bgzip</code>) installed and in your PATH for reference genome processing.</em></p>
 <section id="documentation" class="level3">
 <h3 class="anchored" data-anchor-id="documentation">Documentation</h3>
-<p>Documentation can be found hosted on this GitHub <a href="https://github.com/magistak/bs-cpg">repository</a>’s <a href="https://magistak.github.io/bs-cpg/">pages</a>. Additionally you can find package manager specific guidelines on <a href="https://anaconda.org/magistak/bs-cpg">conda</a> and <a href="https://pypi.org/project/bs-cpg/">pypi</a> respectively.</p>
+<p>Documentation can be found hosted on this GitHub <a href="https://github.com/magistak/bs-cpg">repository</a>’s <a href="https://magistak.github.io/bs-cpg/">pages</a>. Package releases are available on <a href="https://pypi.org/project/bs-cpg/">pypi</a>.</p>
 <div id="cell-13" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs_cpg.download_processed <span class="im">import</span> Geofetcher</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>geo <span class="op">=</span> Geofetcher(just_metadata<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>projects <span class="op">=</span> geo.get_projects(<span class="st">'GSE51239'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs_cpg.download_processed <span class="im">import</span> Geofetcher</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>geo <span class="op">=</span> Geofetcher(just_metadata<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>projects <span class="op">=</span> geo.get_projects(<span class="st">'GSE51239'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <pre><code>2</code></pre>
 </div>
@@ -312,14 +310,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="liftover-validation-bs_cpg.liftover_ps">Liftover &amp; Validation (<code>bs_cpg.liftover_ps</code>)</h3>
 <p>Perform genomic liftover while explicitly handling 0-based or 1-based indexing:</p>
 <div id="cell-15" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs_cpg.liftover_ps <span class="im">import</span> liftover_positions</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>new_chroms, new_pos <span class="op">=</span> liftover_positions(</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    chromosomes<span class="op">=</span>[<span class="st">"chr1"</span>], </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    positions<span class="op">=</span>[<span class="dv">100001</span>], </span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    genome_from<span class="op">=</span><span class="st">"hg19"</span>, </span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    genome_to<span class="op">=</span><span class="st">"hg38"</span>, </span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    index_base_from<span class="op">=</span><span class="dv">1</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs_cpg.liftover_ps <span class="im">import</span> liftover_positions</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>new_chroms, new_pos <span class="op">=</span> liftover_positions(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    chromosomes<span class="op">=</span>[<span class="st">"chr1"</span>], </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    positions<span class="op">=</span>[<span class="dv">100001</span>], </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    genome_from<span class="op">=</span><span class="st">"hg19"</span>, </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    genome_to<span class="op">=</span><span class="st">"hg38"</span>, </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    index_base_from<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>You can also validate CpG site integrity using <code>cpg_percent(reads)</code>.</p>
 

@@ -66,12 +66,6 @@ Install latest from the GitHub
 $ pip install git+https://github.com/magistak/bs-cpg.git
 ```
 
-or from [conda](https://anaconda.org/magistak/bs-cpg)
-
-``` sh
-$ conda install -c magistak bs_cpg
-```
-
 or from [pypi](https://pypi.org/project/bs-cpg/)
 
 ``` sh
@@ -85,10 +79,8 @@ your PATH for reference genome processing.*
 
 Documentation can be found hosted on this GitHub
 [repository](https://github.com/magistak/bs-cpg)’s
-[pages](https://magistak.github.io/bs-cpg/). Additionally you can find
-package manager specific guidelines on
-[conda](https://anaconda.org/magistak/bs-cpg) and
-[pypi](https://pypi.org/project/bs-cpg/) respectively.
+[pages](https://magistak.github.io/bs-cpg/). Package releases are
+available on [pypi](https://pypi.org/project/bs-cpg/).
 
 ``` python
 from bs_cpg.download_processed import Geofetcher
